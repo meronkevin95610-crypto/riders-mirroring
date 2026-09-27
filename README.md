@@ -4,8 +4,55 @@ Desktop application for Windows that mirrors an **Android** device (USB or
 Wi-Fi, via ADB + scrcpy-server) and an **iPhone** (via AirPlay, using UxPlay
 as a redistributable external process).
 
-> **Status:** early bootstrap — only the solution skeleton is in place.
-> See the implementation plan at the bottom of this file for the roadmap.
+> **Status:** v1.0 — multi-device scrcpy mirroring, chrome-style tab hub,
+> 261 tests verts (Debug + Release). Site web officiel :
+> **https://riders-mirroring.github.io/**
+
+---
+
+## 📦 Pour les utilisateurs
+
+👉 [Télécharger l'installateur Windows](https://riders-mirroring.github.io/download.html)
+
+Site officiel servi par **GitHub Pages** :
+- Accueil : https://riders-mirroring.github.io/
+- Télécharger : https://riders-mirroring.github.io/download.html
+- Nouveautés : https://riders-mirroring.github.io/changelog.html
+
+Le MSI est aussi publié sur
+[GitHub Releases](https://github.com/riders-mirroring/riders-mirroring/releases/latest).
+
+---
+
+## 🚀 Pour les mainteneurs — publier une release
+
+1. **Premier déploiement uniquement** : crée le repo GitHub
+   `riders-mirroring/riders-mirroring`, puis :
+
+   ```powershell
+   git remote add origin https://github.com/riders-mirroring/riders-mirroring.git
+   git push -u origin master
+   ```
+
+2. **Active GitHub Pages** : repo → Settings → Pages → Source :
+   *GitHub Actions* (pas "Deploy from a branch").
+
+3. **Publie une release** :
+
+   ```powershell
+   git tag v1.0.0
+   git push origin v1.0.0
+   ```
+
+   Le workflow `.github/workflows/release.yml` :
+   - Build + tests en Debug + Release
+   - Construit le MSI Release win-x64
+   - Le publie sur GitHub Releases avec SHA256
+   - Bundle une copie du MSI dans `docs/site/downloads/`
+
+4. **Mise à jour du site** : à chaque push touchant `docs/site/**`, le
+   workflow `.github/workflows/pages.yml` redéploie le site sur
+   `gh-pages`.
 
 ---
 

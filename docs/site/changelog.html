@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouveautés — Riders Mirroring</title>
+    <meta name="description" content="Historique des versions et nouveautés de Riders Mirroring.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="index.html" class="brand">
+                <span class="brand-mark">R</span>
+                <span class="brand-name">Riders Mirroring</span>
+            </a>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Accueil</a>
+                <a href="download.html" class="nav-link">Télécharger</a>
+                <a href="changelog.html" class="nav-link active">Nouveautés</a>
+                <a href="https://github.com/riders-mirroring/riders-mirroring" class="nav-link nav-link-out">GitHub ↗</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="section">
+            <div class="container">
+                <h1 class="page-title">Nouveautés</h1>
+                <p class="page-lead">Historique des versions et des features ajoutées.</p>
+
+                <div class="changelog">
+
+                    <!-- v1.0 -->
+                    <article class="release">
+                        <header class="release-header">
+                            <h2 class="release-version">v1.0</h2>
+                            <span class="release-date">Septembre 2026</span>
+                            <span class="release-tag release-tag-stable">Stable</span>
+                        </header>
+                        <p class="release-summary">
+                            Première release publique. Multi-device, onglets chrome-style,
+                            pipeline scrcpy v4 brut, décodage FFmpeg in-app.
+                        </p>
+                        <h3>✨ Nouveautés</h3>
+                        <ul>
+                            <li>Décodage H.264/AV1 via FFmpeg.AutoGen 8.1.0 (FFmpeg 8.1.2)</li>
+                            <li>Pipeline scrcpy v4.0 brut (<code>raw_stream=true</code>) — aucune dépendance externe à <code>scrcpy.exe</code></li>
+                            <li>Multi-device : connexion simultanée de plusieurs Android</li>
+                            <li>Hub avec onglets façon navigateur : un onglet par device en miroir</li>
+                            <li>Indicateur live + compteur FPS sur chaque onglet</li>
+                            <li>Connexion USB et Wi-Fi automatique</li>
+                            <li>261 tests unitaires (Core + Desktop), Debug + Release verts</li>
+                        </ul>
+                        <h3>🔧 Technique</h3>
+                        <ul>
+                            <li>FFmpeg.Shared 8.1.2 vendoré (LGPL 2.1)</li>
+                            <li>scrcpy-server.jar 4.0 vendoré</li>
+                            <li>AdvancedSharpAdbClient 3.0.9 pour ADB</li>
+                            <li>Installer MSI WiX 4 — 19 fichiers, ~640 Ko</li>
+                        </ul>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <div>
+                <span class="brand-mark brand-mark-sm">R</span>
+                <span class="footer-brand">Riders Mirroring</span>
+                <span class="footer-meta">· v1.0 · 2026</span>
+            </div>
+            <nav class="footer-nav">
+                <a href="index.html">Accueil</a>
+                <a href="download.html">Télécharger</a>
+                <a href="changelog.html">Nouveautés</a>
+                <a href="https://github.com/riders-mirroring/riders-mirroring">GitHub</a>
+            </nav>
+        </div>
+    </footer>
+</body>
+</html>

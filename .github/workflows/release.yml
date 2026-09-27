@@ -1,0 +1,162 @@
+name: Release
+
+# Déclenché manuellement OU automatiquement quand on push un tag `v*`.
+# - Construit le MSI Release en win-x64.
+# - Publie le MSI sur GitHub Releases avec un changelog auto-généré.
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag version (ex: v1.0.0). Vide = auto depuis le tag du run.'
+        required: false
+        default: ''
+
+env:
+  DOTNET_VERSION: "8.0.x"
+  CONFIGURATION: Release
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build MSI + publish GitHub Release
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve version
+        id: version
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_type }}" -eq 'tag' `
+              ? "${{ github.ref_name }}" `
+              : "${{ inputs.tag }}"
+          if (-not $tag) {
+            Write-Host "::error::No tag supplied. Push a v* tag or pass inputs.tag."
+            exit 1
+          }
+          $version = $tag.TrimStart('v')
+          Write-Host "Resolved version: $version"
+          "VERSION=$version" >> $env:GITHUB_ENV
+          "TAG=$tag" >> $env:GITHUB_ENV
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Cache NuGet
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore
+        run: dotnet restore RidersMirroring.slnx
+
+      - name: Build
+        run: dotnet build RidersMirroring.slnx -c ${{ env.CONFIGURATION }} --no-restore /p:UseSharedCompilation=false
+
+      - name: Test (Core)
+        run: dotnet test tests/RidersMirroring.Core.Tests/RidersMirroring.Core.Tests.csproj -c ${{ env.CONFIGURATION }} --no-build --nologo
+
+      - name: Test (Desktop)
+        run: dotnet test tests/RidersMirroring.Desktop.Tests/RidersMirroring.Desktop.Tests.csproj -c ${{ env.CONFIGURATION }} --no-build --nologo
+
+      - name: Install WiX 4
+        run: dotnet tool install --global wix --version 4.0.5
+
+      - name: Publish Desktop (win-x64, framework-dependent)
+        run: >-
+          dotnet publish src/RidersMirroring.Desktop/RidersMirroring.Desktop.csproj
+          -c ${{ env.CONFIGURATION }} -r win-x64 --self-contained false
+          -p:PublishDir=$(pwd)/installer/RidersMirroring.Installer/publish/win-x64
+          -p:WindowsPackageType=None
+
+      - name: Build MSI
+        working-directory: installer/RidersMirroring.Installer
+        run: >-
+          dotnet build -c ${{ env.CONFIGURATION }}
+          /p:Version=${{ env.VERSION }}
+          /p:UpgradeCode=8B2E5C7A-3D8F-4B6E-9E1A-2C4D6F8A0B1C
+          /p:ProductCode=*
+
+      - name: Locate MSI
+        id: msi
+        shell: pwsh
+        run: |
+          $msi = Get-ChildItem -Path installer/RidersMirroring.Installer/bin -Recurse -Filter *.msi | Select-Object -First 1
+          if (-not $msi) {
+            Write-Host "::error::No .msi produced"
+            exit 1
+          }
+          "MSI_PATH=$($msi.FullName)" >> $env:GITHUB_ENV
+          "MSI_NAME=$($msi.Name)" >> $env:GITHUB_ENV
+          Write-Host "MSI: $($msi.FullName) ($([math]::Round($msi.Length / 1KB, 1)) KB)"
+
+      - name: Compute SHA256
+        id: sha
+        shell: pwsh
+        run: |
+          $hash = (Get-FileHash -Path $env:MSI_PATH -Algorithm SHA256).Hash.ToLower()
+          "MSI_SHA256=$hash" >> $env:GITHUB_ENV
+          Write-Host "SHA256: $hash"
+
+      - name: Build site bundle
+        shell: pwsh
+        run: |
+          # Recopie le MSI dans docs/site/downloads/ pour que le site statique
+          # propose un lien miroir en plus du GitHub Releases.
+          $siteDir = "docs/site/downloads"
+          New-Item -ItemType Directory -Path $siteDir -Force | Out-Null
+          Copy-Item $env:MSI_PATH "$siteDir/$($env:TAG).msi" -Force
+          $hash = $env:MSI_SHA256
+          @"
+MSI_SHA256=$hash
+"@ | Out-File "$siteDir/$($env:TAG).msi.sha256" -Encoding ascii -NoNewline
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG }}
+          name: ${{ env.TAG }}
+          generate_release_notes: true
+          files: |
+            ${{ env.MSI_PATH }}
+          body: |
+            ## Installation
+
+            1. Téléchargez `RidersMirroring-${{ env.VERSION }}.msi`
+            2. Double-cliquez pour installer (Windows 10/11 x64)
+            3. Branchez un Android en USB (débogage USB activé) ou en Wi-Fi
+
+            **SHA256**: `${{ env.MSI_SHA256 }}`
+
+            Voir le [site officiel](https://riders-mirroring.github.io/) pour
+            plus d'infos et de captures.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit site bundle
+        shell: pwsh
+        run: |
+          git config user.email "riders-bot@riders.local"
+          git config user.name  "Riders Bot"
+          git add docs/site/downloads/
+          if (git diff --cached --quiet) {
+            Write-Host "No site changes to commit."
+          } else {
+            git commit -m "docs(site): bundle MSI for $env:TAG"
+            git push
+          }
