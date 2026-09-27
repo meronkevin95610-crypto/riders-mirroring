@@ -40,6 +40,6 @@ Releases est en panne.
 
 Pour adapter le site à ton branding :
 - Palette : variables CSS en haut de `style.css`
-- Liens GitHub : remplace `riders-mirroring/riders-mirroring` par ton
+- Liens GitHub : remplace `meronkevin95610-crypto/riders-mirroring` par ton
   vrai username/repo (3 occurrences dans chaque HTML)
 - Screenshots : remplace `screenshot-hub.png` par ta propre capture

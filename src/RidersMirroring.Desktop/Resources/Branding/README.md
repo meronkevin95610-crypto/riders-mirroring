@@ -1,4 +1,4 @@
-﻿# Branding assets
+# Branding assets
 
 This folder holds the **Riders Mirroring** brand assets bundled with the application.
 

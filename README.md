@@ -20,17 +20,17 @@ Site officiel servi par **GitHub Pages** :
 - Nouveautés : https://riders-mirroring.github.io/changelog.html
 
 Le MSI est aussi publié sur
-[GitHub Releases](https://github.com/riders-mirroring/riders-mirroring/releases/latest).
+[GitHub Releases](https://github.com/meronkevin95610-crypto/riders-mirroring/releases/latest).
 
 ---
 
 ## 🚀 Pour les mainteneurs — publier une release
 
 1. **Premier déploiement uniquement** : crée le repo GitHub
-   `riders-mirroring/riders-mirroring`, puis :
+   `meronkevin95610-crypto/riders-mirroring`, puis :
 
    ```powershell
-   git remote add origin https://github.com/riders-mirroring/riders-mirroring.git
+   git remote add origin https://github.com/meronkevin95610-crypto/riders-mirroring.git
    git push -u origin master
    ```
 
