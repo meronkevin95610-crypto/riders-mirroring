@@ -101,7 +101,10 @@ jobs:
 
       - name: Build MSI
         working-directory: installer/RidersMirroring.Installer
-        run: dotnet build -c ${{ env.CONFIGURATION }} /p:Version=1.0.0 /p:UpgradeCode=8B2E5C7A-3D8F-4B6E-9E1A-2C4D6F8A0B1C /p:ProductCode=*
+        # /p:Platform=x64 is REQUIRED for WiX 4 — without it ICE80 fires on
+        # every 32-bit-flagged Component landing under ProgramFiles64Folder.
+        # We keep the linker on x64 only; arm64 would need its own path.
+        run: dotnet build -c ${{ env.CONFIGURATION }} -p:Platform=x64 /p:Version=1.0.0 /p:UpgradeCode=8B2E5C7A-3D8F-4B6E-9E1A-2C4D6F8A0B1C /p:ProductCode=*
 
       - name: List MSI artifacts
         run: ls -la bin/${{ env.CONFIGURATION }}/x64/*.msi 2>/dev/null || true

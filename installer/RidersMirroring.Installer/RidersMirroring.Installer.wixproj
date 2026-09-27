@@ -18,6 +18,11 @@
     <UpgradeCode Condition="'$(UpgradeCode)' == ''">B5E3C561-2A1B-4E3E-8DF3-1F44E72B9611</UpgradeCode>
     <HarvestSourcesPath>$(MSBuildThisFileDirectory)publish\win-x64</HarvestSourcesPath>
     <DefineConstants>Version=$(Version);UpgradeCode=$(UpgradeCode)</DefineConstants>
+    <!-- Tell the WiX 4 linker to mark every Component as 64-bit so ICE80
+         doesn't complain about 32-bit DLLs landing under ProgramFiles64Folder.
+         Without this, harvest generates <Component> without Bitness=always64
+         and the validator rejects the package. -->
+    <LinkerArgs>-arch x64</LinkerArgs>
   </PropertyGroup>
 
   <ItemGroup>
