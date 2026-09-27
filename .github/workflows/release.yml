@@ -130,21 +130,86 @@ MSI_SHA256=$hash
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.TAG }}
-          name: ${{ env.TAG }}
+          name: "Riders Mirroring ${{ env.VERSION }}"
           generate_release_notes: true
           files: |
             ${{ env.MSI_PATH }}
           body: |
-            ## Installation
+            ## 🎉 Première release publique de Riders Mirroring
 
-            1. Téléchargez `RidersMirroring-${{ env.VERSION }}.msi`
-            2. Double-cliquez pour installer (Windows 10/11 x64)
-            3. Branchez un Android en USB (débogage USB activé) ou en Wi-Fi
+            **Riders Mirroring** est une application Windows gratuite et open
+            source qui permet d'afficher et de contrôler ton téléphone
+            **Android** (USB ou Wi-Fi) directement dans une fenêtre sur ton PC.
+            Plusieurs appareils en parallèle, onglets façon navigateur,
+            latence minimale.
 
-            **SHA256**: `${{ env.MSI_SHA256 }}`
+            ---
 
-            Voir le [site officiel](https://riders-mirroring.github.io/) pour
-            plus d'infos et de captures.
+            ## 📥 Installation
+
+            1. Télécharge `RidersMirroring-${{ env.VERSION }}.msi` ci-dessous.
+            2. Double-clique pour installer (Windows 10 / 11 — 64 bits).
+            3. Si Windows SmartScreen affiche un avertissement, clique sur
+               *Informations complémentaires* → *Exécuter quand même*.
+               C'est normal pour un projet open source sans signature payante.
+            4. Branche ton Android en USB (active le **débogage USB** dans les
+               options développeur) ou connecte-le en Wi-Fi.
+            5. Le hub détecte automatiquement tes appareils et te laisse
+               ouvrir un onglet de mirroring par device.
+
+            **SHA256** : `${{ env.MSI_SHA256 }}`
+
+            ---
+
+            ## ✨ Fonctionnalités principales
+
+            | | |
+            |---|---|
+            | 📱 **Multi-instance** | Connecte plusieurs appareils en parallèle. Un onglet par device. |
+            | 🪟 **Onglets chrome-style** | Ouvre, ferme, switch entre tes sessions en un clic. |
+            | ⚡ **Décodage H.264 in-app** | FFmpeg 8.1.2 intégré, aucun `scrcpy.exe` externe. |
+            | 🔌 **USB & Wi-Fi** | Connexion automatique des devices ADB. |
+            | 🎯 **Faible latence** | Pipeline brut scrcpy v4 : ~50 ms à 1080p / 60 fps. |
+            | 🪶 **Léger & portable** | ~80 Mo installé, aucune dépendance externe. |
+
+            Pour iPhone (AirPlay), la fonctionnalité est en cours
+            d'intégration via UxPlay.
+
+            ---
+
+            ## 🧪 Qualité
+
+            - **261 tests unitaires verts** (156 Core + 105 Desktop) en Debug + Release
+            - **0 erreur de build** sur Windows + .NET 8
+            - **FFmpeg 8.1.2 vendoré** (LGPL 2.1, voir `licenses/ffmpeg-NOTICE.txt`)
+            - **scrcpy-server 4.0 vendoré** (Apache 2.0, voir `licenses/scrcpy-NOTICE.txt`)
+
+            ---
+
+            ## 🔗 Liens
+
+            - 🌐 **Site officiel** : https://meronkevin95610-crypto.github.io/riders-mirroring/
+            - 📦 **Code source** : https://github.com/meronkevin95610-crypto/riders-mirroring
+            - 📚 **Historique des versions** : https://meronkevin95610-crypto.github.io/riders-mirroring/changelog.html
+            - 🐛 **Signaler un bug** : https://github.com/meronkevin95610-crypto/riders-mirroring/issues
+
+            ---
+
+            ## 📜 Licence
+
+            Code source : **MIT** (voir [LICENSE](https://github.com/meronkevin95610-crypto/riders-mirroring/blob/master/LICENSE)).
+            FFmpeg redistribué en LGPL 2.1, scrcpy-server en Apache 2.0 — toutes les licences sont dans le dossier `licenses/` du repo.
+
+            ---
+
+            ## ⚠️ Notes techniques pour cette build
+
+            - **Audio** : désactivé par défaut dans cette release. Le squelette
+              du pipeline est en place (`ScrcpyAudioStream` + `IScrcpyAudioDecoder`)
+              mais le rendu WASAPI sera activé dans une release ultérieure.
+            - **iPhone / AirPlay** : intégration UxPlay en cours, non incluse dans cette release.
+            - **Signature numérique** : le MSI n'est pas signé. SmartScreen
+              affichera un avertissement au premier lancement.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
