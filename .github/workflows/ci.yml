@@ -38,10 +38,28 @@ jobs:
             ${{ runner.os }}-nuget-
 
       - name: Restore
-        run: dotnet restore RidersMirroring.slnx
+        # Build only src/ + tests/ + installer/. The tools/ folder hosts dev
+        # utilities (ffmpeg-probe, RawTest harness, UxPlayStub) that don't
+        # need to ship with the product and may require different toolchain
+        # configurations (e.g. unsafe blocks, native interop).
+        run: |
+          dotnet restore src/RidersMirroring.Core/RidersMirroring.Core.csproj
+          dotnet restore src/RidersMirroring.Desktop/RidersMirroring.Desktop.csproj
+          dotnet restore tests/RidersMirroring.Core.Tests/RidersMirroring.Core.Tests.csproj
+          dotnet restore tests/RidersMirroring.Desktop.Tests/RidersMirroring.Desktop.Tests.csproj
+          dotnet restore installer/RidersMirroring.Installer/RidersMirroring.Installer.wixproj
 
-      - name: Build
-        run: dotnet build RidersMirroring.slnx -c ${{ env.CONFIGURATION }} --no-restore /p:UseSharedCompilation=false
+      - name: Build (Core)
+        run: dotnet build src/RidersMirroring.Core/RidersMirroring.Core.csproj -c ${{ env.CONFIGURATION }} --no-restore /p:UseSharedCompilation=false
+
+      - name: Build (Desktop)
+        run: dotnet build src/RidersMirroring.Desktop/RidersMirroring.Desktop.csproj -c ${{ env.CONFIGURATION }} --no-restore /p:UseSharedCompilation=false
+
+      - name: Build (Core.Tests)
+        run: dotnet build tests/RidersMirroring.Core.Tests/RidersMirroring.Core.Tests.csproj -c ${{ env.CONFIGURATION }} --no-restore /p:UseSharedCompilation=false
+
+      - name: Build (Desktop.Tests)
+        run: dotnet build tests/RidersMirroring.Desktop.Tests/RidersMirroring.Desktop.Tests.csproj -c ${{ env.CONFIGURATION }} --no-restore /p:UseSharedCompilation=false
 
       - name: Test (Core)
         run: dotnet test tests/RidersMirroring.Core.Tests/RidersMirroring.Core.Tests.csproj -c ${{ env.CONFIGURATION }} --no-build --nologo --logger "trx;LogFileName=core.trx"
