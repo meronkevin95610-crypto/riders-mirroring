@@ -1,0 +1,367 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!--
+      Riders Mirroring â€” Dofus Touch Theme
+      Inspired by Ankama's Dofus Touch UI: deep purple canvas, gold
+      borders, parchment text, brass bevels. Fonts (Cinzel Decorative,
+      Cinzel, Almendra) are bundled in Resources/Fonts.
+
+      Resource keys are kept identical to the Dark/Light dictionaries so
+      MainWindow.xaml and the per-view XAML files stay theme-agnostic.
+      Only the brushes change when this dictionary is swapped in.
+    -->
+
+    <!-- ========== Font family URIs ========== -->
+    <!-- WPF's FontFamily syntax: pack://application:,,,/Resources/Fonts/#FamilyName -->
+    <FontFamily x:Key="FontDisplay">pack://application:,,,/Resources/Fonts/#Cinzel</FontFamily>
+    <FontFamily x:Key="FontDecorative">pack://application:,,,/Resources/Fonts/#Cinzel Decorative</FontFamily>
+    <FontFamily x:Key="FontFantasy">pack://application:,,,/Resources/Fonts/#Almendra</FontFamily>
+    <FontFamily x:Key="FontUi">pack://application:,,,/Resources/Fonts/#Almendra</FontFamily>
+    <FontFamily x:Key="FontMono">Cascadia Mono, Consolas, Cascadia Code, Courier New</FontFamily>
+
+    <sys:Double x:Key="UiFontSize">14</sys:Double>
+
+    <!-- ========== Surfaces â€” deep purple/blue layered ========== -->
+    <SolidColorBrush x:Key="BackgroundBrush"        Color="#15121F" />
+    <Color x:Key="BackgroundColor">#15121F</Color>
+    <SolidColorBrush x:Key="BackgroundCanvasBrush" Color="#1A1626" />
+    <Color x:Key="BackgroundCanvasColor">#1A1626</Color>
+    <SolidColorBrush x:Key="SidebarBrush"          Color="#1F1A30" />
+    <Color x:Key="SidebarColor">#1F1A30</Color>
+    <SolidColorBrush x:Key="SurfaceBrush"          Color="#252A4A" />
+    <Color x:Key="SurfaceColor">#252A4A</Color>
+    <SolidColorBrush x:Key="SurfaceElevatedBrush"  Color="#2D3458" />
+    <Color x:Key="SurfaceElevatedColor">#2D3458</Color>
+    <SolidColorBrush x:Key="SurfaceHoverBrush"     Color="#3A3458" />
+    <Color x:Key="SurfaceHoverColor">#3A3458</Color>
+    <SolidColorBrush x:Key="SurfaceSelectedBrush"  Color="#5A4A78" />
+    <Color x:Key="SurfaceSelectedColor">#5A4A78</Color>
+    <SolidColorBrush x:Key="InputBackgroundBrush"  Color="#1F1A2E" />
+    <Color x:Key="InputBackgroundColor">#1F1A2E</Color>
+    <SolidColorBrush x:Key="LogBackgroundBrush"    Color="#0A0814" />
+    <Color x:Key="LogBackgroundColor">#0A0814</Color>
+
+    <!-- ========== Gold family â€” borders, titles, accents ========== -->
+    <SolidColorBrush x:Key="Gold1Brush"  Color="#FFF4C1" />
+    <Color x:Key="Gold1Color">#FFF4C1</Color>
+    <SolidColorBrush x:Key="Gold2Brush"  Color="#FFD700" />
+    <Color x:Key="Gold2Color">#FFD700</Color>
+    <SolidColorBrush x:Key="Gold3Brush"  Color="#D4AF37" />
+    <Color x:Key="Gold3Color">#D4AF37</Color>
+    <SolidColorBrush x:Key="Gold4Brush"  Color="#B8941F" />
+    <Color x:Key="Gold4Color">#B8941F</Color>
+    <SolidColorBrush x:Key="Gold5Brush"  Color="#8B6F1A" />
+    <Color x:Key="Gold5Color">#8B6F1A</Color>
+    <SolidColorBrush x:Key="Bronze3Brush" Color="#5C4A2A" />
+    <Color x:Key="Bronze3Color">#5C4A2A</Color>
+
+    <!-- ========== Parchment text ========== -->
+    <SolidColorBrush x:Key="ForegroundBrush"        Color="#F4E4C1" />
+    <Color x:Key="ForegroundColor">#F4E4C1</Color>
+    <SolidColorBrush x:Key="ForegroundSecondaryBrush" Color="#E8D4A0" />
+    <Color x:Key="ForegroundSecondaryColor">#E8D4A0</Color>
+    <SolidColorBrush x:Key="ForegroundMutedBrush"   Color="#C9B078" />
+    <Color x:Key="ForegroundMutedColor">#C9B078</Color>
+    <SolidColorBrush x:Key="ForegroundDisabledBrush" Color="#8B7A5C" />
+    <Color x:Key="ForegroundDisabledColor">#8B7A5C</Color>
+    <SolidColorBrush x:Key="ForegroundOnAccentBrush" Color="#15121F" />
+    <Color x:Key="ForegroundOnAccentColor">#15121F</Color>
+
+    <!-- ========== Borders / dividers ========== -->
+    <SolidColorBrush x:Key="BorderBrush"     Color="#5C4A2A" />
+    <Color x:Key="BorderColor">#5C4A2A</Color>
+    <SolidColorBrush x:Key="BorderStrongBrush" Color="#8B6F1A" />
+    <Color x:Key="BorderStrongColor">#8B6F1A</Color>
+    <SolidColorBrush x:Key="DividerBrush"    Color="#5C4A2A" />
+    <Color x:Key="DividerColor">#5C4A2A</Color>
+
+    <!-- ========== Status â€” Dofus HP/MP/XP palette ========== -->
+    <SolidColorBrush x:Key="SuccessBrush"    Color="#6ABE30" />
+    <Color x:Key="SuccessColor">#6ABE30</Color>
+    <SolidColorBrush x:Key="SuccessDarkBrush" Color="#3D7A1C" />
+    <Color x:Key="SuccessDarkColor">#3D7A1C</Color>
+    <SolidColorBrush x:Key="WarningBrush"    Color="#F0A020" />
+    <Color x:Key="WarningColor">#F0A020</Color>
+    <SolidColorBrush x:Key="WarningDarkBrush" Color="#A06810" />
+    <Color x:Key="WarningDarkColor">#A06810</Color>
+    <SolidColorBrush x:Key="ErrorBrush"      Color="#C9302C" />
+    <Color x:Key="ErrorColor">#C9302C</Color>
+    <SolidColorBrush x:Key="ErrorDarkBrush"  Color="#7A1A18" />
+    <Color x:Key="ErrorDarkColor">#7A1A18</Color>
+    <SolidColorBrush x:Key="MpBlueBrush"     Color="#4A8BD6" />
+    <Color x:Key="MpBlueColor">#4A8BD6</Color>
+    <SolidColorBrush x:Key="MpBlueDarkBrush" Color="#2A528A" />
+    <Color x:Key="MpBlueDarkColor">#2A528A</Color>
+
+    <!-- Primary accent = Gold3 (replaces the previous VioletPink #7F77DD) -->
+    <SolidColorBrush x:Key="AccentPrimaryBrush"   Color="#FFD700" />
+    <Color x:Key="AccentPrimaryColor">#FFD700</Color>
+    <SolidColorBrush x:Key="AccentSecondaryBrush" Color="#D4AF37" />
+    <Color x:Key="AccentSecondaryColor">#D4AF37</Color>
+    <SolidColorBrush x:Key="AccentTertiaryBrush"  Color="#B8941F" />
+    <Color x:Key="AccentTertiaryColor">#B8941F</Color>
+
+    <!-- ========== Log level brushes â€” Dofus MMORPG style ========== -->
+    <SolidColorBrush x:Key="LogInfoBrush"  Color="#8AD8FF" />
+    <Color x:Key="LogInfoColor">#8AD8FF</Color>
+    <SolidColorBrush x:Key="LogOkBrush"    Color="#A8E8A0" />
+    <Color x:Key="LogOkColor">#A8E8A0</Color>
+    <SolidColorBrush x:Key="LogWarnBrush"  Color="#FFD080" />
+    <Color x:Key="LogWarnColor">#FFD080</Color>
+    <SolidColorBrush x:Key="LogErrorBrush" Color="#FFB0B0" />
+    <Color x:Key="LogErrorColor">#FFB0B0</Color>
+    <SolidColorBrush x:Key="LogDebugBrush" Color="#8B7A5C" />
+    <Color x:Key="LogDebugColor">#8B7A5C</Color>
+    <SolidColorBrush x:Key="LogAccentBrush" Color="#D4AF37" />
+    <Color x:Key="LogAccentColor">#D4AF37</Color>
+    <SolidColorBrush x:Key="LogForegroundBrush" Color="#F4E4C1" />
+    <Color x:Key="LogForegroundColor">#F4E4C1</Color>
+    <SolidColorBrush x:Key="LogTimestampBrush" Color="#8B7A5C" />
+    <Color x:Key="LogTimestampColor">#8B7A5C</Color>
+
+    <!-- ========== Misc ========== -->
+    <SolidColorBrush x:Key="ChipTextBrush" Color="#C9B078" />
+    <Color x:Key="ChipTextColor">#C9B078</Color>
+    <SolidColorBrush x:Key="KbdForegroundBrush" Color="#D4AF37" />
+    <Color x:Key="KbdForegroundColor">#D4AF37</Color>
+    <SolidColorBrush x:Key="HeroAccentBrush"  Color="#FFD700" />
+    <Color x:Key="HeroAccentColor">#FFD700</Color>
+
+    <!-- ========== Implicit styles ========== -->
+
+    <!-- Buttons â€” chunky, beveled, gold borders -->
+    <Style TargetType="Button">
+        <Setter Property="FontFamily" Value="{StaticResource FontDisplay}" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="FontSize"   Value="12" />
+        <Setter Property="Padding"    Value="14,8" />
+        <Setter Property="Margin"     Value="0" />
+        <Setter Property="Cursor"     Value="Hand" />
+        <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd"
+                            BorderBrush="{StaticResource Gold5Brush}"
+                            BorderThickness="2"
+                            CornerRadius="6"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Offset="0" Color="#3A3458" />
+                                <GradientStop Offset="1" Color="#2D3458" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          TextBlock.FontFamily="{TemplateBinding FontFamily}"
+                                          TextBlock.FontWeight="{TemplateBinding FontWeight}"
+                                          TextBlock.FontSize="{TemplateBinding FontSize}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource Gold3Brush}" />
+                            <Setter TargetName="Bd" Property="Background">
+                                <Setter.Value>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Offset="0" Color="#4A4470" />
+                                        <GradientStop Offset="1" Color="#3A3458" />
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource SurfaceSelectedBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.4" />
+                            <Setter Property="Cursor" Value="Arrow" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Primary button â€” gold filled -->
+    <Style x:Key="PrimaryButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd"
+                            BorderBrush="{StaticResource Gold1Brush}"
+                            BorderThickness="2"
+                            CornerRadius="6"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Offset="0"   Color="#FFD700" />
+                                <GradientStop Offset="0.5" Color="#D4AF37" />
+                                <GradientStop Offset="1"   Color="#B8941F" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          TextElement.Foreground="{StaticResource ForegroundOnAccentBrush}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background">
+                                <Setter.Value>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Offset="0"   Color="#FFF4C1" />
+                                        <GradientStop Offset="0.5" Color="#FFD700" />
+                                        <GradientStop Offset="1"   Color="#D4AF37" />
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background">
+                                <Setter.Value>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Offset="0" Color="#B8941F" />
+                                        <GradientStop Offset="1" Color="#8B6F1A" />
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.4" />
+                            <Setter Property="Cursor" Value="Arrow" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Danger button â€” blood red HP-bar style -->
+    <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd"
+                            BorderBrush="#FF7070"
+                            BorderThickness="2"
+                            CornerRadius="6"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Offset="0" Color="#C9302C" />
+                                <GradientStop Offset="1" Color="#7A1A18" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          TextElement.Foreground="{StaticResource ForegroundBrush}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background">
+                                <Setter.Value>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Offset="0" Color="#E84040" />
+                                        <GradientStop Offset="1" Color="#C9302C" />
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- TextBox â€” gold-bordered input -->
+    <Style TargetType="TextBox">
+        <Setter Property="FontFamily" Value="{StaticResource FontFantasy}" />
+        <Setter Property="FontSize"   Value="13" />
+        <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
+        <Setter Property="CaretBrush" Value="{StaticResource Gold2Brush}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="2,4" />
+    </Style>
+
+    <!-- ListBox â€” transparent background, hover gold, selected gold border -->
+    <Style TargetType="ListBox">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
+        <Setter Property="FontFamily" Value="{StaticResource FontUi}" />
+    </Style>
+
+    <Style TargetType="ListBoxItem">
+        <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <!-- TextBlock â€” defaults to parchment -->
+    <Style TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource FontUi}" />
+        <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
+    </Style>
+
+    <!-- Window defaults intentionally NOT defined here: an implicit
+         Style TargetType="Window" causes a StackOverflowException in
+         WindowsBase when a Window tree contains a TextBlock that
+         inherits its FontFamily through the Window resource. The
+         default font/foreground is provided per-control instead. -->
+
+
+    <!-- ===== Quick-connect card : used in AboutView stats and centre pane ===== -->
+    <Style x:Key="QcCardBorder" TargetType="Border">
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Offset="0" Color="{StaticResource SurfaceBrush}" />
+                    <GradientStop Offset="1" Color="{StaticResource SurfaceElevatedBrush}" />
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="BorderBrush" Value="{StaticResource Gold5Brush}" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="18" />
+    </Style>
+
+    <!-- ===== Ornate section title : italic accent after main title ===== -->
+    <Style x:Key="CentreTitleStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource FontDecorative}" />
+        <Setter Property="FontWeight" Value="Black" />
+        <Setter Property="FontSize"   Value="28" />
+        <Setter Property="Foreground" Value="{StaticResource Gold1Brush}" />
+    </Style>
+
+    <Style x:Key="CentreSubtitleStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource FontFantasy}" />
+        <Setter Property="FontStyle"  Value="Italic" />
+        <Setter Property="FontSize"    Value="13" />
+        <Setter Property="Foreground"  Value="{StaticResource ForegroundMutedBrush}" />
+    </Style>
+
+    <!-- ===== Stat card : bronze top bar + label + big value ===== -->
+    <Style x:Key="StatCardStyle" TargetType="Border">
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Offset="0" Color="{StaticResource SurfaceBrush}" />
+                    <GradientStop Offset="1" Color="{StaticResource SurfaceElevatedBrush}" />
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="BorderBrush" Value="{StaticResource Gold5Brush}" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="14" />
+    </Style>
+
+</ResourceDictionary>

@@ -1,0 +1,100 @@
+# ---------------------------------------------------------------------------
+# .NET / Visual Studio
+# ---------------------------------------------------------------------------
+
+## Build results
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+## Visual Studio
+.vs/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.sln.docstates
+
+## Rider / ReSharper / dotMemory / dotTrace
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+*.DotSettings
+.idea/
+
+## NuGet
+packages/
+*.nupkg
+*.snupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+
+## Test results & coverage
+[Tt]est[Rr]esult*/
+coverage*.json
+coverage*.xml
+coverage*.info
+TestResult*.xml
+
+## Publish / installer output
+publish/
+AppPackages/
+BundleArtifacts/
+*.msi
+*.exe
+*.dll
+*.pdb
+!vendor/**/*.dll
+
+## Logs
+*.log
+
+# ---------------------------------------------------------------------------
+# OS / IDE-specific
+# ---------------------------------------------------------------------------
+
+## Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+## macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+## Linux
+*~
+
+# ---------------------------------------------------------------------------
+# Project-specific
+# ---------------------------------------------------------------------------
+
+# Local user settings (theme, layout)
+%LOCALAPPDATA%/Riders Mirroring/
+appsettings.local.json
+
+# Vendor sources that we redistribute but don't want to track full history of
+# (keep a LICENSE per folder instead — see /licenses/)
+vendor/scrcpy-server-*/
+vendor/uxplay/
+vendor/ffmpeg/
+
+# But keep licence files for these redistributed components
+!vendor/**/LICENSE*
+!vendor/**/NOTICE*
+
+# Rider Mirroring runtime artefacts
+logs/
+*.scrlog

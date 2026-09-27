@@ -1,0 +1,27 @@
+UxPlay is licensed under the GPLv3 License.
+
+Copyright (c) 2020-2024 FDH2
+
+UxPlay is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+UxPlay is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with UxPlay. If not, see <https://www.gnu.org/licenses/>.
+
+Full source: https://github.com/FDH2/UxPlay
+Full license: https://github.com/FDH2/UxPlay/blob/master/LICENSE
+
+Riders Mirroring AGGREGATES UxPlay without linking its source code:
+the executable is spawned as a separate process and we only consume
+its stdout/stderr. Under the GPL "derivative work" doctrine this
+qualifies as mere aggregation, so Riders Mirroring itself remains MIT-licensed.
+
+End users installing Riders Mirroring receive the UxPlay binary under
+the GPLv3 alongside the app.

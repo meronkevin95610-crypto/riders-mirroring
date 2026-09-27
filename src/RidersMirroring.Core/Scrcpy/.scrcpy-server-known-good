@@ -1,0 +1,25 @@
+# Known-good scrcpy-server.jar (pinned).
+#
+# Update in lock-step with tools/fetch-vendor-scrcpy-server.ps1:
+#   - tag              : GitHub release tag (Genymobile/scrcpy)
+#   - asset-filename   : exact asset name on the release (note: NO .jar extension
+#                        on the upstream — the file is served as octet-stream
+#                        and is conventionally renamed to .jar locally)
+#   - url              : direct download URL (browser_download_url)
+#   - sha256           : lowercase hex sha256 of the upstream asset
+#   - local-name       : file name to use inside vendor/scrcpy-server/
+#                        (must be scrcpy-server.jar so ScrcpyServer.cs finds it
+#                        without code changes)
+#   - fetched-at-utc   : ISO timestamp of last successful extraction
+#   - source           : <github-owner>/<github-repo> for licensing traceability
+#   - upstream-version : exposed via `app_process -v` on the device; must match
+#                        the `4.0` first argument passed by ScrcpyServer.cs —
+#                        scrcpy aborts when client and server versions differ.
+tag: v4.0
+asset-filename: scrcpy-server-v4.0
+local-name: scrcpy-server.jar
+url: https://github.com/Genymobile/scrcpy/releases/download/v4.0/scrcpy-server-v4.0
+sha256: 84924bd564a1eb6089c872c7521f968058977f91f5ff02514a8c74aff3210f3a
+fetched-at-utc: 2026-09-27T08:55:45Z
+source: Genymobile/scrcpy
+upstream-version: 4.0

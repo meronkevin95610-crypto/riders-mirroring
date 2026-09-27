@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Riders Mirroring — Hub Dofus Touch Edition</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Cinzel+Decorative:wght@700;900&family=Almendra:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  /* ==========================================================
+     Riders Mirroring — Dofus Touch Edition
+     Palette: pourpre profond / or / parchemin / bleu nuit
+     Inspiration: Ankama UI panels (Dofus Touch)
+     ========================================================== */
+
+  :root {
+    /* Surfaces — deep purple/blue, layered */
+    --bg-base:        #15121f;
+    --bg-canvas:      #1a1626;
+    --bg-panel:       #252a4a;
+    --bg-panel-2:     #2d3458;
+    --bg-elevated:    #3a3458;
+    --bg-hover:       #4a4470;
+    --bg-selected:    #5a4a78;
+    --bg-input:       #1f1a2e;
+
+    /* Or / gold — the spine of Dofus UI */
+    --gold-1:         #fff4c1;
+    --gold-2:         #ffd700;
+    --gold-3:         #d4af37;
+    --gold-4:         #b8941f;
+    --gold-5:         #8b6f1a;
+    --gold-shadow:    #5c4612;
+
+    /* Bronze (for deeper borders / shadows) */
+    --bronze-1:       #c19a5b;
+    --bronze-2:       #8b6f3f;
+    --bronze-3:       #5c4a2a;
+
+    /* Parchment text */
+    --cream-1:        #f4e4c1;
+    --cream-2:        #e8d4a0;
+    --cream-3:        #c9b078;
+    --cream-4:        #8b7a5c;
+
+    /* Status — Dofus-tuned */
+    --hp-red:         #c9302c;
+    --hp-red-dark:    #7a1a18;
+    --mp-blue:        #4a8bd6;
+    --mp-blue-dark:   #2a528a;
+    --xp-gold:        #f0a020;
+    --xp-gold-dark:   #a06810;
+    --success:        #6abe30;
+    --success-dark:   #3d7a1c;
+    --warning:        #f0a020;
+    --warning-dark:   #a06810;
+    --danger:         #c9302c;
+    --danger-dark:    #7a1a18;
+
+    /* Typography */
+    --font-display:   "Cinzel", "Trajan Pro", serif;
+    --font-deco:      "Cinzel Decorative", "Cinzel", serif;
+    --font-fantasy:   "Almendra", "Cinzel", serif;
+    --font-ui:        "Segoe UI", system-ui, sans-serif;
+    --font-mono:      "Cascadia Mono", "Consolas", monospace;
+
+    /* Layout */
+    --topbar-h:       64px;
+    --sidebar-w:      312px;
+    --logstrip-h:     208px;
+    --radius:         6px;
+    --radius-lg:      10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    background:
+      radial-gradient(1200px 700px at 80% -10%, rgba(212,175,55,.08), transparent 60%),
+      radial-gradient(900px 500px at 0% 110%, rgba(74,139,214,.06), transparent 65%),
+      var(--bg-canvas);
+    color: var(--cream-1);
+    font-family: var(--font-ui);
+    font-size: 14px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: .035;
+    z-index: 0;
+    background-image:
+      radial-gradient(1px 1px at 25% 25%, var(--gold-2) 50%, transparent 51%),
+      radial-gradient(1px 1px at 75% 75%, var(--gold-2) 50%, transparent 51%),
+      radial-gradient(1px 1px at 50% 80%, var(--gold-3) 50%, transparent 51%);
+    background-size: 80px 80px, 100px 100px, 120px 120px;
+  }
+
+  .window {
+    display: grid;
+    grid-template-rows: var(--topbar-h) 1fr 1px var(--logstrip-h);
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ===== TOP BAR ===== */
+  .topbar {
+    display: grid;
+    grid-template-columns: var(--sidebar-w) 1fr auto;
+    align-items: center;
+    background: linear-gradient(180deg, #2a2444 0%, #1a1626 100%);
+    border-bottom: 3px solid var(--gold-3);
+    box-shadow: inset 0 1px 0 rgba(255,215,0,.3), 0 2px 8px rgba(0,0,0,.5);
+    position: relative;
+  }
+  .topbar::after {
+    content: "";
+    position: absolute;
+    bottom: -7px;
+    left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-4), var(--gold-3), var(--gold-4), transparent);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 20px;
+    height: 100%;
+    border-right: 1px solid rgba(212,175,55,.18);
+  }
+
+  .brand-logo {
+    width: 44px;
+    height: 44px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .brand-logo .shield {
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 30% 25%, var(--gold-1), var(--gold-3) 50%, var(--gold-5) 100%);
+    clip-path: polygon(50% 0%, 100% 18%, 100% 65%, 50% 100%, 0% 65%, 0% 18%);
+    display: grid; place-items: center;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,.5));
+    position: relative;
+  }
+  .brand-logo .shield::before {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    background: radial-gradient(circle at 35% 30%, var(--gold-1), var(--gold-3) 70%);
+    clip-path: polygon(50% 0%, 100% 18%, 100% 65%, 50% 100%, 0% 65%, 0% 18%);
+    box-shadow: inset 0 0 8px rgba(92,70,18,.6);
+  }
+  .brand-logo .shield svg {
+    width: 22px; height: 22px;
+    color: var(--bronze-3);
+    position: relative; z-index: 2;
+  }
+
+  .brand-text { line-height: 1.1; }
+  .brand-name {
+    font-family: var(--font-deco);
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: var(--gold-2);
+    text-shadow: 0 1px 0 var(--gold-5), 0 2px 4px rgba(0,0,0,.6);
+  }
+  .brand-tag {
+    font-family: var(--font-fantasy);
+    font-style: italic;
+    font-size: 11px;
+    color: var(--cream-3);
+    margin-top: 2px;
+    letter-spacing: .3px;
+  }
+
+  .topbar-status {
+    justify-self: center;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 22px;
+    background: linear-gradient(180deg, var(--bg-elevated) 0%, var(--bg-panel-2) 100%);
+    border: 1.5px solid var(--gold-4);
+    border-radius: var(--radius);
+    box-shadow: inset 0 1px 0 rgba(255,215,0,.2), inset 0 -1px 0 rgba(0,0,0,.4), 0 2px 6px rgba(0,0,0,.4);
+    font-family: var(--font-fantasy);
+    font-size: 13px;
+    color: var(--cream-2);
+    position: relative;
+  }
+  .topbar-status::before, .topbar-status::after { content: "❖"; color: var(--gold-4); font-size: 10px; }
+  .topbar-status .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, var(--success), var(--success-dark));
+    box-shadow: 0 0 8px var(--success), inset 0 1px 0 rgba(255,255,255,.4);
+  }
+  .topbar-status .dot.idle { background: radial-gradient(circle at 30% 30%, #6a6470, #3a3540); box-shadow: inset 0 1px 0 rgba(255,255,255,.2); }
+  .topbar-status .dot.warn { background: radial-gradient(circle at 30% 30%, var(--warning), var(--warning-dark)); box-shadow: 0 0 8px var(--warning), inset 0 1px 0 rgba(255,255,255,.4); }
+  .topbar-status strong { color: var(--gold-2); font-weight: 700; font-family: var(--font-display); letter-spacing: .5px; }
+
+  .window-controls { display: flex; gap: 6px; padding: 0 14px; }
+  .window-controls button {
+    width: 38px; height: 38px;
+    border-radius: var(--radius);
+    border: 1.5px solid var(--gold-5);
+    background: linear-gradient(180deg, var(--bg-elevated) 0%, var(--bg-panel-2) 100%);
+    color: var(--gold-3);
+    cursor: pointer;
+    font-family: "Segoe Fluent Icons", "Segoe MDL2 Assets", system-ui;
+    font-size: 12px;
+    display: grid; place-items: center;
+    box-shadow: inset 0 1px 0 rgba(255,215,0,.2), inset 0 -1px 0 rgba(0,0,0,.4), 0 1px 3px rgba(0,0,0,.4);
+    transition: all .15s;
+  }
+  .window-controls button:hover { background: linear-gradient(180deg, var(--bg-hover) 0%, var(--bg-elevated) 100%); border-color: var(--gold-3); color: var(--gold-2); }
+  .window-controls .close:hover { background: linear-gradient(180deg, #6a1a18 0%, #3a0a08 100%); border-color: var(--hp-red); color: var(--cream-1); }
+
+  .main-grid {
+    display: grid;
+    grid-template-columns: var(--sidebar-w) 1px 1fr;
+    min-height: 0;
+  }
+  .v-divider { background: linear-gradient(180deg, transparent, var(--gold-5) 20%, var(--gold-5) 80%, transparent); }
+  .h-divider { background: linear-gradient(90deg, transparent, var(--gold-5) 20%, var(--gold-5) 80%, transparent); }
+
+  /* ===== SIDEBAR ===== */
+  .sidebar {
+    background: linear-gradient(180deg, #1f1a30 0%, #15121f 100%);
+    padding: 18px 14px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-height: 0;
+    overflow: hidden;
+    border-right: 1px solid rgba(212,175,55,.12);
+    position: relative;
+  }
+  .sidebar::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(0deg, rgba(212,175,55,.015) 0, rgba(212,175,55,.015) 2px, transparent 2px, transparent 6px);
+    pointer-events: none;
+  }
+
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 6px;
+    position: relative; z-index: 1;
+  }
+  .sidebar-title {
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gold-3);
+    text-shadow: 0 1px 0 rgba(0,0,0,.5);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sidebar-title::before { content: "✦"; color: var(--gold-4); font-size: 11px; }
+  .sidebar-count {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, var(--bg-elevated) 0%, var(--bg-panel) 100%);
+    color: var(--gold-2);
+    border: 1.5px solid var(--gold-5);
+    box-shadow: inset 0 1px 0 rgba(255,215,0,.2), inset 0 -1px 0 rgba(0,0,0,.4);
+    letter-spacing: .5px;
+  }
+
+  .search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--bg-input);
+    border: 2px solid var(--gold-5);
+    border-radius: var(--radius);
+    transition: border-color .15s, box-shadow .15s;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,.5), inset 0 1px 0 rgba(0,0,0,.3);
+    position: relative; z-index: 1;
+  }
+  .search:focus-within {
+    border-color: var(--gold-2);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,.5), 0 0 0 3px rgba(255,215,0,.15), 0 0 12px rgba(255,215,0,.3);
+  }
+  .search .icon { width: 14px; height: 14px; color: var(--gold-3); flex-shrink: 0; }
+  .search input {
+    flex: 1; background: transparent; border: 0; outline: 0;
+    color: var(--cream-1);
+    font: inherit; font-family: var(--font-fantasy); font-size: 13px;
+  }
+  .search input::placeholder { color: var(--cream-4); font-style: italic; }
+  .search kbd {
+    font: 10px/1 var(--font-mono);
+    color: var(--gold-3);
+    background: var(--bg-canvas);
+    padding: 3px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--gold-5);
+    box-shadow: inset 0 1px 0 rgba(0,0,0,.5);
+  }
+
+  .device-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0 -2px;
+    position: relative; z-index: 1;
+  }
+  .device-list::-webkit-scrollbar { width: 10px; }
+  .device-list::-webkit-scrollbar-track { background: var(--bg-input); border-radius: 5px; }
+  .device-list::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--gold-5), var(--bronze-3)); border-radius: 5px; border: 2px solid var(--bg-input); }
+
+  .device-card {
+    display: grid;
+    grid-template-columns: 48px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-panel-2) 100%);
+    border: 1.5px solid var(--gold-5);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all .18s;
+    box-shadow: inset 0 1px 0 rgba(255,215,0,.12), inset 0 -1px 0 rgba(0,0,0,.4), 0 2px 4px rgba(0,0,0,.3);
+    position: relative;
+  }
+  .device-card:hover {
+    border-color: var(--gold-3);
+    box-shadow: inset 0 1px 0 rgba(255,215,0,.2), inset 0 -1px 0 rgba(0,0,0,.4), 0 4px 10px rgba(0,0,0,.4), 0 0 8px rgba(255,215,0,.15);
+    transform: translateY(-1px);
+  }
+  .device-card.selected {
+    background: linear-gradient(180deg, #5a4a78 0%, #3a2a58 100%);
+    border-color: var(--gold-2);
+    box-shadow: inset 0 1px 0 rgba(255,215,0,.4), inset 0 -1px 0 rgba(0,0,0,.4), 0 0 16px rgba(255,215,0,.35), 0 4px 12px rgba(0,0,0,.5);
+  }
+  .device-card.selected::before {
+    content: "★";
+    position: absolute;
+    top: -8px; left: 50%;
+    transform: translateX(-50%);
+    color: var(--gold-2);
+    font-size: 14px;
+    text-shadow: 0 0 8px var(--gold-2);
+  }
+
+  .device-avatar {
+    width: 48px; height: 48px;
+    border-radius: var(--radius);
+    background: radial-gradient(circle at 30% 30%, var(--bg-elevated), var(--bg-canvas));
+    border: 1.5px solid var(--gold-5);
+    display: grid; place-items: center;
+    color: var(--gold-3);
+    position: relative;
+    box-shadow: inset 0 1px 0 rgba(255,215,0,.15);
+  }
+  .device-card.selected .device-avatar {
+    border-color: var(--gold-2);
+    color: var(--gold-2);
+    box-shadow: inset 0 1px 0 rgba(255,215,0,.3), 0 0 8px rgba(255,215,0,.4);
+  }
+  .device-avatar svg { width: 24px; height: 24px; }
+
+  .device-avatar .status {
+    position: absolute;
+    bottom: -3px; right: -3px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--bg-panel-2);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.3);
+  }
+  .device-avatar .status.online  { background: radial-gradient(circle at 30% 30%, #8fdf50, var(--success) 60%, var(--success-dark)); }
+  .device-avatar .status.busy    { background: radial-gradient(circle at 30% 30%, #ffce60, var(--warning) 60%, var(--warning-dark)); animation: pulse 1.6s ease-in-out infinite; }
+  .device-avatar .status.offline { background: radial-gradient(circle at 30% 30%, #8a8490, #4a4450); }
+  .device-avatar .status.error   { background: radial-gradient(circle at 30% 30%, #ff8080, var(--danger) 60%, var(--danger-dark)); }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 0 0 0 currentColor; }
+    50%      { box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 0 0 6px transparent; }
+  }
+
+  .device-meta { min-width: 0; }
+  .device-name {
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--cream-1);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: .3px;
+    text-shadow: 0 1px 0 rgba(0,0,0,.5);
+  }
+  .device-card.selected .device-name { color: var(--gold-1); }
+  .device-sub {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-fantasy);
+    font-size: 11px;
+    color: var(--cream-3);
+    margin-top: 3px;
+    font-style: italic;
+  }
+  .device-sub .chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 7px;
+    border-radius: 3px;
+    background: var(--bg-canvas);
+    color: var(--cream-3);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .8px;
+    border: 1px solid var(--bronze-3);
+    text-transform: uppercase;
+    font-family: var(--font-display);
+    font-style: normal;
+  }
+  .device-sub .chip.usb { color: #8ad8ff; border-color: #2a528a; background: linear-gradient(180deg, #1a2a48 0%, #0a1a30 100%); }
+  .device-sub .chip.wifi { color: #a0e8a0; border-color: var(--success-dark); background: linear-gradient(180deg, #1a3818 0%, #0a2008 100%); }
+
+  .device-action { color: var(--gold-5); transition: color .15s, transform .15s; }
+  .device-card:hover .device-action { color: var(--gold-2); transform: translateX(2px); }
+  .device-card.selected .device-action { color: var(--gold-2); }
+  .device-action svg { width: 14px; height: 14px; }
+
+  .nav-section {
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid var(--gold-5);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: relative; z-index: 1;
+  }
+  .nav-section::before {
+    content: "✦ Navigation ✦";
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-canvas);
+    padding: 0 12px;
+    font-family: var(--font-display);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--gold-4);
+    text-transform: uppercase;
+  }
+  .nav-item {
+    display: grid;
+    grid-template-columns: 28px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    color: var(--cream-3);
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    background: transparent;
+    text-align: left;
+    font: inherit;
+    transition: all .15s;
+  }
+  .nav-item:hover { background: linear-gradient(90deg, rgba(212,175,55,.08) 0%, transparent 100%); border-color: var(--gold-5); color: var(--cream-1); }
+  .nav-item .nav-icon {
+    font-family: "Segoe Fluent Icons", "Segoe MDL2 Assets", system-ui;
+    font-size: 16px;
+    width: 28px; height: 28px;
+    display: grid; place-items: center;
+    color: var(--gold-4);
+    background: var(--bg-canvas);
+    border: 1px solid var(--bronze-3);
+    border-radius: 4px;
+    box-shadow: inset 0 1px 0 rgba(255,215,0,.1);
+  }
+  .nav-item .nav-label {
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-shadow: 0 1px 0 rgba(0,0,0,.5);
+  }
+  .nav-item .nav-kbd {
+    font: 10px/1 var(--font-mono);
+    color: var(--gold-4);
+    padding: 3px 6px;
+    border-radius: 3px;
+    background: var(--bg-canvas);
+    border: 1px solid var(--bronze-3);
+    box-shadow: inset 0 1px 0 rgba(0,0,0,.4);
+  }
+  .nav-item.active {
+    background: linear-gradient(90deg, rgba(212,175,55,.18) 0%, rgba(212,175,55,.04) 100%);
+    border-color: var(--gold-3);
+    color: var(--gold-1);
+    box-shadow: inset 0 1px 0 rgba(255,215,0,.3), inset 0 -1px 0 rgba(0,0,0,.3), 0 0 12px rgba(255,215,0,.2);
+  }
+  .nav-item.active .nav-icon {
+    color: var(--bg-canvas);
+    background: linear-gradient(180deg, var(--gold-2), var(--gold-4));
+    border-color: var(--gold-2);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.4), inset 0 -1px 0 rgba(92,70,18,.5), 0 0 8px rgba(255,215,0,.4);
+  }
+  .nav-item.active .nav-kbd { color: var(--bg-canvas); background: var(--gold-3); border-color: var(--gold-2); }
+
+  /* ===== CENTRE ===== */
+  .centre {
+    background: radial-gradient(900px 500px at 50% 0%, rgba(74,139,214,.04), transparent 70%), var(--bg-canvas);
+    padding: 26px 32px;
+    overflow-y: auto;
+    position: relative;
+  }
+  .centre::-webkit-scrollbar { width: 12px; }
+  .centre::-webkit-scrollbar-track { background: var(--bg-input); }
+  .centre::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--gold-5), var(--bronze-3)); border: 3px solid var(--bg-input); border-radius: 6px; }
+
+  .centre-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 22px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--gold-5);
+    position: relative;
+  }
+  .centre-header::after {
+    content: "";
+    position: absolute;
+    bottom: -3px;
+    left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-3) 20%, var(--gold-3) 80%, transparent);
+    opacity: .5;
+  }
+  .centre-title {
+    font-family: var(--font-deco);
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--gold-1);
+    letter-spacing: 1px;
+    text-shadow: 0 1px 0 var(--gold-5), 0 2px 6px rgba(0,0,0,.6);
+    line-height: 1.1;
+  }
+  .centre-title .accent {
+    color: var(--gold-2);
+    font-style: italic;
+    text-shadow: 0 0 12px rgba(255,215,0,.5), 0 1px 0 var(--gold-5);
+  }
+  .centre-sub { font-family: var(--font-fantasy); font-style: italic; font-size: 13px; color: var(--cream-3); margin-top: 6px; }
+  .btn-row { display: flex; gap: 10px; align-items: center; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: var(--radius);
+    border: 2px solid var(--gold-5);
+    background: linear-gradient(180deg, var(--bg-elevated) 0%, var(--bg-panel-2) 100%);
+    color: var(--cream-1);
+    font: inherit;
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all .15s;
+    box-shadow: inset 0 1px 0 rgba(255,215,0,.2), inset 0 -1px 0 rgba(0,0,0,.4), inset 2px 0 0 rgba(255,255,255,.05), inset -2px 0 0 rgba(0,0,0,.2), 0 2px 4px rgba(0,0,0,.4);
+    text-shadow: 0 1px 0 rgba(0,0,0,.6);
+  }
+  .btn:hover {
+    background: linear-gradient(180deg, var(--bg-hover) 0%, var(--bg-elevated) 100%);
+    border-color: var(--gold-3);
+    transform: translateY(-1px);
+    box-shadow: inset 0 1px 0 rgba(255,215,0,.3), inset 0 -1px 0 rgba(0,0,0,.4), 0 4px 8px rgba(0,0,0,.5), 0 0 8px rgba(255,215,0,.15);
+  }
+  .btn:active { transform: translateY(0); }
+  .btn.primary {
+    background: linear-gradient(180deg, var(--gold-2) 0%, var(--gold-3) 50%, var(--gold-4) 100%);
+    border-color: var(--gold-1);
+    color: var(--bg-canvas);
+    text-shadow: 0 1px 0 rgba(255,235,150,.5);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.5), inset 0 -1px 0 rgba(92,70,18,.5), inset 2px 0 0 rgba(255,255,255,.15), inset -2px 0 0 rgba(92,70,18,.3), 0 2px 8px rgba(255,215,0,.3);
+  }
+  .btn.primary:hover {
+    background: linear-gradient(180deg, var(--gold-1) 0%, var(--gold-2) 50%, var(--gold-3) 100%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.6), inset 0 -1px 0 rgba(92,70,18,.5), 0 4px 12px rgba(255,215,0,.5), 0 0 16px rgba(255,215,0,.3);
+  }
+  .btn.danger {
+    background: linear-gradient(180deg, var(--danger) 0%, var(--danger-dark) 100%);
+    border-color: #ff7070;
+    color: var(--cream-1);
+    text-shadow: 0 1px 0 rgba(0,0,0,.8);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.3), inset 0 -1px 0 rgba(0,0,0,.5), 0 2px 8px rgba(201,48,44,.4);
+  }
+  .btn.danger:hover { background: linear-gradient(180deg, #e84040 0%, var(--danger) 100%); box-shadow: inset 0 1px 0 rgba(255,255,255,.4), inset 0 -1px 0 rgba(0,0,0,.5), 0 4px 12px rgba(201,48,44,.6), 0 0 16px rgba(201,48,44,.4); }
+  .btn.ghost { background: transparent; border-color: var(--bronze-3); color: var(--cream-3); }
+  .btn.ghost:hover { background: rgba(212,175,55,.08); border-color: var(--gold-5); color: var(--cream-1); }
+  .btn svg { width: 14px; height: 14px; }
+
+  .hero-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 64px 32px;
+    border: 2px dashed var(--gold-5);
+    border-radius: var(--radius);
+    background: radial-gradient(500px 250px at 50% 0%, rgba(74,139,214,.08), transparent 70%), linear-gradient(180deg, rgba(42,40,74,.3) 0%, rgba(21,18,31,.5) 100%);
+    box-shadow: inset 0 0 40px rgba(212,175,55,.05), inset 0 1px 0 rgba(255,215,0,.1);
+    position: relative;
+  }
+  .hero-empty::before, .hero-empty::after {
+    content: "❖"; position: absolute; font-size: 20px; color: var(--gold-4); opacity: .6;
+  }
+  .hero-empty::before { top: 12px; left: 18px; }
+  .hero-empty::after  { top: 12px; right: 18px; }
+
+  .hero-icon { width: 96px; height: 96px; position: relative; margin-bottom: 24px; }
+  .hero-icon .shield-bg {
+    width: 100%; height: 100%;
+    background: radial-gradient(circle at 35% 25%, var(--gold-1), var(--gold-3) 60%, var(--gold-5));
+    clip-path: polygon(50% 0%, 100% 18%, 100% 65%, 50% 100%, 0% 65%, 0% 18%);
+    display: grid; place-items: center;
+    filter: drop-shadow(0 4px 12px rgba(255,215,0,.3));
+  }
+  .hero-icon .shield-bg::before {
+    content: "";
+    position: absolute;
+    inset: 6px;
+    background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.3), transparent 50%);
+    clip-path: polygon(50% 0%, 100% 18%, 100% 65%, 50% 100%, 0% 65%, 0% 18%);
+    pointer-events: none;
+  }
+  .hero-icon svg { width: 48px; height: 48px; color: var(--bronze-3); position: relative; z-index: 2; }
+
+  .hero-empty h2 {
+    font-family: var(--font-deco);
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--gold-1);
+    margin-bottom: 10px;
+    letter-spacing: 1.5px;
+    text-shadow: 0 2px 4px rgba(0,0,0,.6);
+  }
+  .hero-empty p {
+    color: var(--cream-3);
+    max-width: 420px;
+    margin-bottom: 26px;
+    font-family: var(--font-fantasy);
+    font-style: italic;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .hero-empty .hint { margin-top: 28px; display: flex; gap: 24px; color: var(--cream-4); font-family: var(--font-fantasy); font-size: 12px; font-style: italic; }
+  .hero-empty .hint span { display: inline-flex; align-items: center; gap: 6px; }
+  .hero-empty .hint kbd {
+    font: 10px/1 var(--font-mono);
+    background: var(--bg-canvas);
+    color: var(--gold-3);
+    padding: 3px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--gold-5);
+    box-shadow: inset 0 1px 0 rgba(0,0,0,.5);
+    font-style: normal;
+  }
+
+  .quick-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .qc-card {
+    background: linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-panel-2) 100%);
+    border: 2px solid var(--gold-5);
+    border-radius: var(--radius);
+    padding: 18px;
+    box-shadow: inset 0 1px 0 rgba(255,215,0,.2), inset 0 -1px 0 rgba(0,0,0,.4), 0 4px 12px rgba(0,0,0,.4);
+    transition: all .2s;
+    cursor: pointer;
+    position: relative;
+  }
+  .qc-card::before, .qc-card::after {
+    content: "";
+    position: absolute;
+    width: 10px; height: 10px;
+    border: 2px solid var(--gold-3);
+    pointer-events: none;
+  }
+  .qc-card::before { top: -2px; left: -2px; border-right: 0; border-bottom: 0; }
+  .qc-card::after  { bottom: -2px; right: -2px; border-left: 0; border-top: 0; }
+  .qc-card:hover {
+    border-color: var(--gold-3);
+    transform: translateY(-2px);
+    box-shadow: inset 0 1px 0 rgba(255,215,0,.3), inset 0 -1px 0 rgba(0,0,0,.4), 0 8px 20px rgba(0,0,0,.5), 0 0 12px rgba(255,215,0,.2);
+  }
+  .qc-card .qc-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .qc-card .qc-head .icon {
+    width: 40px; height: 40px;
+    border-radius: var(--radius);
+    display: grid; place-items: center;
+    color: var(--gold-2);
+    background: radial-gradient(circle at 30% 30%, var(--gold-2), var(--gold-4) 80%);
+    border: 1.5px solid var(--gold-5);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.4), inset 0 -1px 0 rgba(92,70,18,.5), 0 2px 4px rgba(0,0,0,.3);
+  }
+  .qc-card .qc-head .icon svg { width: 22px; height: 22px; color: var(--bg-canvas); }
+  .qc-card h3 {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--gold-1);
+    letter-spacing: .8px;
+    text-transform: uppercase;
+    text-shadow: 0 1px 0 rgba(0,0,0,.5);
+  }
+  .qc-card p {
+    font-family: var(--font-fantasy);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--cream-3);
+    margin-bottom: 14px;
+    min-height: 36px;
+    line-height: 1.4;
+  }
+  .qc-card .qc-foot {
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--cream-3);
+    padding-top: 12px;
+    border-top: 1px solid var(--bronze-3);
+    letter-spacing: .5px;
+  }
+  .qc-card .qc-foot .pill {
+    padding: 3px 10px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, var(--success) 0%, var(--success-dark) 100%);
+    color: var(--cream-1);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 9px;
+    letter-spacing: 1px;
+    border: 1px solid var(--success-dark);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 1px 2px rgba(0,0,0,.4);
+    text-shadow: 0 1px 0 rgba(0,0,0,.5);
+  }
+
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+  .stat {
+    background: linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-panel-2) 100%);
+    border: 2px solid var(--gold-5);
+    border-radius: var(--radius);
+    padding: 14px;
+    box-shadow: inset 0 1px 0 rgba(255,215,0,.2), inset 0 -1px 0 rgba(0,0,0,.4), 0 2px 6px rgba(0,0,0,.3);
+    position: relative;
+    overflow: hidden;
+  }
+  .stat::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--bronze-2), var(--gold-3), var(--bronze-2));
+    box-shadow: 0 1px 4px rgba(212,175,55,.4);
+  }
+  .stat .stat-label {
+    font-family: var(--font-display);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--gold-3);
+    margin-bottom: 8px;
+    margin-top: 4px;
+    text-shadow: 0 1px 0 rgba(0,0,0,.5);
+  }
+  .stat .stat-value {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: .5px;
+    color: var(--cream-1);
+    text-shadow: 0 1px 0 rgba(0,0,0,.5);
+  }
+  .stat .stat-value .unit {
+    font-size: 12px; font-weight: 600; color: var(--cream-3);
+    margin-left: 4px; text-transform: uppercase; letter-spacing: .8px;
+  }
+  .stat.success .stat-value { color: #8fdf50; text-shadow: 0 0 8px rgba(106,190,48,.4); }
+  .stat.warning .stat-value { color: var(--warning); text-shadow: 0 0 8px rgba(240,160,32,.4); }
+
+  /* ===== LOG STRIP ===== */
+  .log-strip {
+    background: linear-gradient(180deg, #0a0814 0%, #15121f 100%);
+    border-top: 3px solid var(--gold-3);
+    padding: 12px 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    box-shadow: inset 0 1px 0 rgba(255,215,0,.3), 0 -2px 8px rgba(0,0,0,.5);
+    position: relative;
+  }
+  .log-strip::before {
+    content: "";
+    position: absolute;
+    top: -6px; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-4), var(--gold-3), var(--gold-4), transparent);
+  }
+
+  .log-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--bronze-3); }
+  .log-header .left { display: flex; align-items: center; gap: 12px; font-family: var(--font-display); font-size: 11px; color: var(--cream-2); text-transform: uppercase; letter-spacing: 2px; font-weight: 700; text-shadow: 0 1px 0 rgba(0,0,0,.5); }
+  .log-header .left .live { display: inline-flex; align-items: center; gap: 6px; color: #8fdf50; text-shadow: 0 0 8px rgba(106,190,48,.5); }
+  .log-header .left .live::before {
+    content: ""; width: 8px; height: 8px; border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #8fdf50, var(--success) 60%, var(--success-dark));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 0 8px var(--success);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  .log-header .right { display: flex; gap: 6px; }
+  .log-btn {
+    padding: 5px 10px;
+    font-family: var(--font-display);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: linear-gradient(180deg, var(--bg-elevated) 0%, var(--bg-panel-2) 100%);
+    border: 1.5px solid var(--gold-5);
+    color: var(--cream-2);
+    border-radius: var(--radius);
+    cursor: pointer;
+    text-shadow: 0 1px 0 rgba(0,0,0,.5);
+    box-shadow: inset 0 1px 0 rgba(255,215,0,.15), inset 0 -1px 0 rgba(0,0,0,.4);
+  }
+  .log-btn:hover { background: linear-gradient(180deg, var(--bg-hover) 0%, var(--bg-elevated) 100%); border-color: var(--gold-3); color: var(--cream-1); }
+
+  .log-list { flex: 1; overflow-y: auto; font-family: var(--font-mono); font-size: 12px; line-height: 1.6; }
+  .log-list::-webkit-scrollbar { width: 10px; }
+  .log-list::-webkit-scrollbar-track { background: var(--bg-input); }
+  .log-list::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--gold-5), var(--bronze-3)); border: 2px solid var(--bg-input); border-radius: 5px; }
+
+  .log-row { display: grid; grid-template-columns: 80px 70px 1fr; gap: 12px; padding: 1px 4px; white-space: nowrap; border-radius: 2px; }
+  .log-row:hover { background: rgba(212,175,55,.04); }
+  .log-row .ts { color: var(--cream-4); font-family: var(--font-mono); }
+  .log-row .lvl {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-align: center;
+    padding: 1px 0;
+    border-radius: 2px;
+  }
+  .log-row .lvl.info  { color: #8ad8ff; background: linear-gradient(180deg, rgba(74,139,214,.2), rgba(74,139,214,.1)); border: 1px solid rgba(74,139,214,.3); }
+  .log-row .lvl.ok    { color: #a8e8a0; background: linear-gradient(180deg, rgba(106,190,48,.2), rgba(106,190,48,.1)); border: 1px solid rgba(106,190,48,.3); }
+  .log-row .lvl.warn  { color: #ffd080; background: linear-gradient(180deg, rgba(240,160,32,.2), rgba(240,160,32,.1)); border: 1px solid rgba(240,160,32,.3); }
+  .log-row .lvl.err   { color: #ffb0b0; background: linear-gradient(180deg, rgba(201,48,44,.2), rgba(201,48,44,.1)); border: 1px solid rgba(201,48,44,.3); }
+  .log-row .lvl.debug { color: var(--cream-4); background: rgba(139,122,92,.1); border: 1px solid var(--bronze-3); }
+  .log-row .msg { color: var(--cream-1); overflow: hidden; text-overflow: ellipsis; }
+  .log-row .msg .num { color: var(--gold-3); font-weight: 600; }
+
+  .variant-bar {
+    position: fixed;
+    top: 16px; right: 16px;
+    background: var(--bg-panel);
+    border: 2px solid var(--gold-3);
+    padding: 6px;
+    border-radius: var(--radius);
+    display: flex;
+    gap: 4px;
+    z-index: 1000;
+    box-shadow: inset 0 1px 0 rgba(255,215,0,.3), 0 4px 16px rgba(0,0,0,.5);
+  }
+  .variant-bar button {
+    padding: 6px 12px;
+    font: inherit;
+    font-family: var(--font-display);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: transparent;
+    border: 1.5px solid transparent;
+    color: var(--cream-3);
+    border-radius: var(--radius);
+    cursor: pointer;
+    text-shadow: 0 1px 0 rgba(0,0,0,.5);
+  }
+  .variant-bar button.active {
+    background: linear-gradient(180deg, var(--gold-2) 0%, var(--gold-3) 100%);
+    border-color: var(--gold-1);
+    color: var(--bg-canvas);
+    text-shadow: 0 1px 0 rgba(255,235,150,.5);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 2px 4px rgba(255,215,0,.3);
+  }
+  .variant-bar button:not(.active):hover { background: rgba(212,175,55,.1); border-color: var(--gold-5); color: var(--cream-1); }
+
+  .scene { display: none; }
+  .scene.active { display: grid; }
+
+  .preview-canvas {
+    flex: 1;
+    min-height: 260px;
+    border: 3px solid var(--gold-3);
+    border-radius: var(--radius);
+    background: radial-gradient(circle at 30% 20%, #2a3a5a 0%, #0a0d18 70%);
+    box-shadow: inset 0 0 40px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,215,0,.15);
+    display: grid;
+    place-items: center;
+    color: var(--cream-4);
+    position: relative;
+    overflow: hidden;
+  }
+  .preview-canvas .live-badge {
+    position: absolute;
+    top: 14px; left: 14px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-family: var(--font-display);
+    font-size: 10px;
+    color: var(--warning);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 700;
+    padding: 5px 12px;
+    background: linear-gradient(180deg, rgba(0,0,0,.6) 0%, rgba(0,0,0,.4) 100%);
+    border: 1px solid var(--warning-dark);
+    border-radius: var(--radius);
+    text-shadow: 0 0 8px var(--warning);
+  }
+  .preview-canvas .live-badge::before {
+    content: "";
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--warning);
+    box-shadow: 0 0 8px var(--warning);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+</style>
+</head>
+<body>
+
+<div class="variant-bar">
+  <button data-scene="empty"   class="active">Empty</button>
+  <button data-scene="active">3 Devices</button>
+  <button data-scene="mirroring">Mirror Live</button>
+  <button data-scene="settings">Settings</button>
+  <button data-scene="about">About</button>
+</div>
+
+<!-- SCENE 1 - Empty -->
+<div class="window scene active" data-scene="empty">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo"><div class="shield"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 4 5v6c0 5 3.5 9.5 8 11 4.5-1.5 8-6 8-11V5l-8-3Z"/></svg></div></div>
+      <div class="brand-text">
+        <div class="brand-name">Riders Mirroring</div>
+        <div class="brand-tag">Mirror Android &amp; iPhone, side by side</div>
+      </div>
+    </div>
+    <div class="topbar-status">
+      <span class="dot idle"></span>
+      <span>No device <strong>connected</strong></span>
+    </div>
+    <div class="window-controls">
+      <button title="Minimize">&#xE921;</button>
+      <button class="close" title="Close">&#xE8BB;</button>
+    </div>
+  </header>
+  <main class="main-grid">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-title">Devices</span>
+        <span class="sidebar-count">0 ONLINE</span>
+      </div>
+      <div class="search">
+        <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="m11 11 3 3"/></svg>
+        <input type="text" placeholder="Search the realm..." />
+        <kbd>⌘K</kbd>
+      </div>
+      <div class="device-list" style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--cream-4);font-size:12px;font-family:var(--font-fantasy);font-style:italic;padding:20px;text-align:center;">
+        No adventurers in sight —<br/>await a device to join the party.
+      </div>
+      <nav class="nav-section">
+        <button class="nav-item active"><span class="nav-icon">&#xE8AB;</span><span class="nav-label">Mirror</span><span class="nav-kbd">⌘1</span></button>
+        <button class="nav-item"><span class="nav-icon">&#xE93C;</span><span class="nav-label">AirPlay</span><span class="nav-kbd">⌘2</span></button>
+        <button class="nav-item"><span class="nav-icon">&#xE701;</span><span class="nav-label">Wireless</span><span class="nav-kbd">⌘3</span></button>
+        <button class="nav-item"><span class="nav-icon">&#xE713;</span><span class="nav-label">Settings</span><span class="nav-kbd">⌘4</span></button>
+        <button class="nav-item"><span class="nav-icon">&#xE946;</span><span class="nav-label">About</span><span class="nav-kbd">⌘5</span></button>
+      </nav>
+    </aside>
+    <div class="v-divider"></div>
+    <section class="centre">
+      <div class="centre-header">
+        <div>
+          <h1 class="centre-title">Mirror <span class="accent">— Portal</span></h1>
+          <div class="centre-sub">Cast your Android screen into the realm</div>
+        </div>
+      </div>
+      <div class="hero-empty">
+        <div class="hero-icon">
+          <div class="shield-bg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg>
+          </div>
+        </div>
+        <h2>The Portal is Dark</h2>
+        <p>No device stands ready at the gate. Connect an Android via USB, enable wireless debugging, or summon a new ally to your party.</p>
+        <div class="btn-row">
+          <button class="btn primary"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1v10m0 0L4 7m4 4 4-4M2 14h12"/></svg>Summon Device</button>
+          <button class="btn">Read the Tome</button>
+        </div>
+        <div class="hint">
+          <span><kbd>Ctrl</kbd>+<kbd>N</kbd> New ally</span>
+          <span><kbd>F5</kbd> Refresh</span>
+          <span><kbd>?</kbd> Scrolls of power</span>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div class="h-divider"></div>
+  <section class="log-strip">
+    <div class="log-header">
+      <div class="left"><span class="live">Chronicle</span><span>ADB · AirPlay log</span></div>
+      <div class="right"><button class="log-btn">Clear</button><button class="log-btn">Copy</button><button class="log-btn">Filter</button></div>
+    </div>
+    <div class="log-list">
+      <div class="log-row"><span class="ts">14:52:01</span><span class="lvl info">INFO</span><span class="msg">ADB server started on port <span class="num">5037</span></span></div>
+      <div class="log-row"><span class="ts">14:52:02</span><span class="lvl info">INFO</span><span class="msg">Watching USB + wireless transports</span></div>
+      <div class="log-row"><span class="ts">14:52:03</span><span class="lvl ok">OK</span><span class="msg">uxplay not started (AirPlay disabled)</span></div>
+    </div>
+  </section>
+</div>
+
+<!-- SCENE 2 - Active -->
+<div class="window scene" data-scene="active">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo"><div class="shield"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 4 5v6c0 5 3.5 9.5 8 11 4.5-1.5 8-6 8-11V5l-8-3Z"/></svg></div></div>
+      <div class="brand-text">
+        <div class="brand-name">Riders Mirroring</div>
+        <div class="brand-tag">Mirror Android &amp; iPhone, side by side</div>
+      </div>
+    </div>
+    <div class="topbar-status">
+      <span class="dot"></span>
+      <span><strong>3</strong> devices ready · <strong>2</strong> online</span>
+    </div>
+    <div class="window-controls">
+      <button title="Minimize">&#xE921;</button>
+      <button class="close" title="Close">&#xE8BB;</button>
+    </div>
+  </header>
+  <main class="main-grid">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-title">Devices</span>
+        <span class="sidebar-count">2 OF 3</span>
+      </div>
+      <div class="search">
+        <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="m11 11 3 3"/></svg>
+        <input type="text" placeholder="Search the realm..." /><kbd>⌘K</kbd>
+      </div>
+      <div class="device-list">
+        <div class="device-card selected">
+          <div class="device-avatar">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 2.5h-11A2.5 2.5 0 0 0 4 5v14a2.5 2.5 0 0 0 2.5 2.5h11A2.5 2.5 0 0 0 20 19V5a2.5 2.5 0 0 0-2.5-2.5Zm-5.25 19a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm5.25-4H6.5V5h11v12.5Z"/></svg>
+            <span class="status online"></span>
+          </div>
+          <div class="device-meta">
+            <div class="device-name">Pixel 8 Pro</div>
+            <div class="device-sub"><span class="chip usb">USB</span><span>Android 14 · 192.168.1.42</span></div>
+          </div>
+          <span class="device-action"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></span>
+        </div>
+        <div class="device-card">
+          <div class="device-avatar">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 2.5h-11A2.5 2.5 0 0 0 4 5v14a2.5 2.5 0 0 0 2.5 2.5h11A2.5 2.5 0 0 0 20 19V5a2.5 2.5 0 0 0-2.5-2.5Z"/></svg>
+            <span class="status online"></span>
+          </div>
+          <div class="device-meta">
+            <div class="device-name">Galaxy S24 Ultra</div>
+            <div class="device-sub"><span class="chip wifi">Wi-Fi</span><span>192.168.1.51:5555</span></div>
+          </div>
+          <span class="device-action"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></span>
+        </div>
+        <div class="device-card">
+          <div class="device-avatar">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 2.5h-11A2.5 2.5 0 0 0 4 5v14a2.5 2.5 0 0 0 2.5 2.5h11A2.5 2.5 0 0 0 20 19V5a2.5 2.5 0 0 0-2.5-2.5Z"/></svg>
+            <span class="status offline"></span>
+          </div>
+          <div class="device-meta">
+            <div class="device-name">OnePlus 11</div>
+            <div class="device-sub"><span class="chip">—</span><span>Last seen 2h ago</span></div>
+          </div>
+          <span class="device-action"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></span>
+        </div>
+      </div>
+      <nav class="nav-section">
+        <button class="nav-item active"><span class="nav-icon">&#xE8AB;</span><span class="nav-label">Mirror</span><span class="nav-kbd">⌘1</span></button>
+        <button class="nav-item"><span class="nav-icon">&#xE93C;</span><span class="nav-label">AirPlay</span><span class="nav-kbd">⌘2</span></button>
+        <button class="nav-item"><span class="nav-icon">&#xE701;</span><span class="nav-label">Wireless</span><span class="nav-kbd">⌘3</span></button>
+        <button class="nav-item"><span class="nav-icon">&#xE713;</span><span class="nav-label">Settings</span><span class="nav-kbd">⌘4</span></button>
+        <button class="nav-item"><span class="nav-icon">&#xE946;</span><span class="nav-label">About</span><span class="nav-kbd">⌘5</span></button>
+      </nav>
+    </aside>
+    <div class="v-divider"></div>
+    <section class="centre">
+      <div class="centre-header">
+        <div>
+          <h1 class="centre-title">Mirror <span class="accent">— Pixel 8 Pro</span></h1>
+          <div class="centre-sub">USB transport · Android 14 · API 34</div>
+        </div>
+        <div class="btn-row">
+          <button class="btn ghost"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 4v8m-4-4h8"/></svg>Summon</button>
+          <button class="btn primary"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M4 4l8 4-8 4z"/></svg>Begin Casting</button>
+        </div>
+      </div>
+      <div class="stats-row">
+        <div class="stat"><div class="stat-label">Latency</div><div class="stat-value">42<span class="unit">ms</span></div></div>
+        <div class="stat success"><div class="stat-label">Resolution</div><div class="stat-value">1080×2340</div></div>
+        <div class="stat warning"><div class="stat-label">Bitrate</div><div class="stat-value">8.4<span class="unit">Mbps</span></div></div>
+        <div class="stat"><div class="stat-label">Uptime</div><div class="stat-value">0:00:00</div></div>
+      </div>
+      <div class="quick-grid">
+        <div class="qc-card">
+          <div class="qc-head">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="m10 9 5 3-5 3z" fill="currentColor"/></svg></span>
+            <h3>Screen Record</h3>
+          </div>
+          <p>Inscribe the device screen onto a magical MP4 scroll, with hardware encoding.</p>
+          <div class="qc-foot"><span>Up to 4K · 60 fps</span><span class="pill">Ready</span></div>
+        </div>
+        <div class="qc-card">
+          <div class="qc-head">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg></span>
+            <h3>Screenshot</h3>
+          </div>
+          <p>Capture a single moment onto a PNG parchment in your Pictures scroll rack.</p>
+          <div class="qc-foot"><span>PNG · Ctrl+S</span><span class="pill">Ready</span></div>
+        </div>
+        <div class="qc-card">
+          <div class="qc-head">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg></span>
+            <h3>Preferences</h3>
+          </div>
+          <p>Adjust bitrate, FPS, decoder, window size, OTG mode, and dark incantations.</p>
+          <div class="qc-foot"><span>12 options</span><span class="pill">Ready</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div class="h-divider"></div>
+  <section class="log-strip">
+    <div class="log-header">
+      <div class="left"><span class="live">Chronicle</span><span>Mirror log · Pixel 8 Pro</span></div>
+      <div class="right"><button class="log-btn">Clear</button><button class="log-btn">Copy</button><button class="log-btn">Open folder</button></div>
+    </div>
+    <div class="log-list">
+      <div class="log-row"><span class="ts">14:53:21</span><span class="lvl info">INFO</span><span class="msg">[scrcpy <span class="num">2.4</span>] serial=<span class="num">98291AFAFA</span> · transport=usb</span></div>
+      <div class="log-row"><span class="ts">14:53:21</span><span class="lvl info">INFO</span><span class="msg">Pushing scrcpy-server v<span class="num">2.4</span> to /data/local/tmp/</span></div>
+      <div class="log-row"><span class="ts">14:53:22</span><span class="lvl ok">OK</span><span class="msg">Server conjured on port <span class="num">27183</span> (pid <span class="num">4892</span>)</span></div>
+      <div class="log-row"><span class="ts">14:53:23</span><span class="lvl debug">DEBUG</span><span class="msg">Decoder: h264 -&gt; d3d11va · <span class="num">1080x2340</span></span></div>
+      <div class="log-row"><span class="ts">14:53:23</span><span class="lvl ok">OK</span><span class="msg">Video stream active · <span class="num">8.4</span> Mbps · <span class="num">60</span> fps</span></div>
+    </div>
+  </section>
+</div>
+
+<!-- SCENE 3 - Mirroring -->
+<div class="window scene" data-scene="mirroring">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo"><div class="shield"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 4 5v6c0 5 3.5 9.5 8 11 4.5-1.5 8-6 8-11V5l-8-3Z"/></svg></div></div>
+      <div class="brand-text">
+        <div class="brand-name">Riders Mirroring</div>
+        <div class="brand-tag">Mirror Android &amp; iPhone, side by side</div>
+      </div>
+    </div>
+    <div class="topbar-status">
+      <span class="dot warn"></span>
+      <span><strong>Mirroring</strong> · Pixel 8 Pro · 00:01:42</span>
+    </div>
+    <div class="window-controls">
+      <button title="Minimize">&#xE921;</button>
+      <button class="close" title="Close">&#xE8BB;</button>
+    </div>
+  </header>
+  <main class="main-grid">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-title">Devices</span>
+        <span class="sidebar-count">1 MIRRORING</span>
+      </div>
+      <div class="search">
+        <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="m11 11 3 3"/></svg>
+        <input type="text" placeholder="Search the realm..." /><kbd>⌘K</kbd>
+      </div>
+      <div class="device-list">
+        <div class="device-card selected">
+          <div class="device-avatar">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 2.5h-11A2.5 2.5 0 0 0 4 5v14a2.5 2.5 0 0 0 2.5 2.5h11A2.5 2.5 0 0 0 20 19V5a2.5 2.5 0 0 0-2.5-2.5Z"/></svg>
+            <span class="status busy"></span>
+          </div>
+          <div class="device-meta">
+            <div class="device-name">Pixel 8 Pro</div>
+            <div class="device-sub"><span class="chip usb">USB</span><span>Casting · 8.4 Mbps</span></div>
+          </div>
+          <span class="device-action"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M5 4h6v8H5z"/></svg></span>
+        </div>
+        <div class="device-card">
+          <div class="device-avatar">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 2.5h-11A2.5 2.5 0 0 0 4 5v14a2.5 2.5 0 0 0 2.5 2.5h11A2.5 2.5 0 0 0 20 19V5a2.5 2.5 0 0 0-2.5-2.5Z"/></svg>
+            <span class="status online"></span>
+          </div>
+          <div class="device-meta">
+            <div class="device-name">Galaxy S24 Ultra</div>
+            <div class="device-sub"><span class="chip wifi">Wi-Fi</span><span>192.168.1.51:5555</span></div>
+          </div>
+          <span class="device-action"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></span>
+        </div>
+      </div>
+      <nav class="nav-section">
+        <button class="nav-item active"><span class="nav-icon">&#xE8AB;</span><span class="nav-label">Mirror</span><span class="nav-kbd">⌘1</span></button>
+        <button class="nav-item"><span class="nav-icon">&#xE93C;</span><span class="nav-label">AirPlay</span><span class="nav-kbd">⌘2</span></button>
+        <button class="nav-item"><span class="nav-icon">&#xE701;</span><span class="nav-label">Wireless</span><span class="nav-kbd">⌘3</span></button>
+        <button class="nav-item"><span class="nav-icon">&#xE713;</span><span class="nav-label">Settings</span><span class="nav-kbd">⌘4</span></button>
+        <button class="nav-item"><span class="nav-icon">&#xE946;</span><span class="nav-label">About</span><span class="nav-kbd">⌘5</span></button>
+      </nav>
+    </aside>
+    <div class="v-divider"></div>
+    <section class="centre" style="display:flex; flex-direction:column;">
+      <div class="centre-header">
+        <div>
+          <h1 class="centre-title">Casting <span class="accent">— Pixel 8 Pro</span></h1>
+          <div class="centre-sub">USB transport · 1080×2340 @ 60 fps · 8.4 Mbps</div>
+        </div>
+        <div class="btn-row">
+          <button class="btn">Pause</button>
+          <button class="btn">Screenshot</button>
+          <button class="btn danger"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="4" y="4" width="8" height="8" rx="1"/></svg>Stop</button>
+        </div>
+      </div>
+      <div class="preview-canvas">
+        <div class="live-badge">Live preview</div>
+        <div style="text-align:center;">
+          <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" style="color:var(--cream-4); margin-bottom:12px;"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="18.5" r=".5" fill="currentColor"/></svg>
+          <div style="font-family:var(--font-display); font-size:13px; color:var(--cream-2); letter-spacing:1px;">SCRCPY PORTAL OPENS HERE</div>
+          <div style="font-family:var(--font-fantasy); font-style:italic; font-size:11px; color:var(--cream-4); margin-top:6px;">Detached window · 1080×2340</div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div class="h-divider"></div>
+  <section class="log-strip">
+    <div class="log-header">
+      <div class="left"><span class="live">Chronicle</span><span>Mirror log · Pixel 8 Pro</span></div>
+      <div class="right"><button class="log-btn">Clear</button><button class="log-btn">Copy</button><button class="log-btn">Filter</button></div>
+    </div>
+    <div class="log-list">
+      <div class="log-row"><span class="ts">14:53:21</span><span class="lvl info">INFO</span><span class="msg">[scrcpy <span class="num">2.4</span>] serial=<span class="num">98291AFAFA</span></span></div>
+      <div class="log-row"><span class="ts">14:53:22</span><span class="lvl ok">OK</span><span class="msg">Server conjured on port <span class="num">27183</span></span></div>
+      <div class="log-row"><span class="ts">14:53:23</span><span class="lvl debug">DEBUG</span><span class="msg">Decoder: h264 -&gt; d3d11va</span></div>
+      <div class="log-row"><span class="ts">14:53:23</span><span class="lvl ok">OK</span><span class="msg">Video stream active</span></div>
+      <div class="log-row"><span class="ts">14:55:02</span><span class="lvl info">INFO</span><span class="msg">Touch event injected @ (<span class="num">540</span>, <span class="num">1200</span>)</span></div>
+      <div class="log-row"><span class="ts">14:55:03</span><span class="lvl ok">OK</span><span class="msg">Screenshot saved to Pictures\Riders\pixel-<span class="num">2026-09-26-145503</span>.png</span></div>
+    </div>
+  </section>
+</div>
+
+<!-- SCENE 4 - Settings -->
+<div class="window scene" data-scene="settings">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo"><div class="shield"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 4 5v6c0 5 3.5 9.5 8 11 4.5-1.5 8-6 8-11V5l-8-3Z"/></svg></div></div>
+      <div class="brand-text">
+        <div class="brand-name">Riders Mirroring</div>
+        <div class="brand-tag">Mirror Android &amp; iPhone, side by side</div>
+      </div>
+    </div>
+    <div class="topbar-status"><span class="dot"></span><span><strong>3</strong> devices ready</span></div>
+    <div class="window-controls"><button>&#xE921;</button><button class="close">&#xE8BB;</button></div>
+  </header>
+  <main class="main-grid">
+    <aside class="sidebar">
+      <div class="sidebar-header"><span class="sidebar-title">Devices</span><span class="sidebar-count">2 OF 3</span></div>
+      <div class="search">
+        <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="m11 11 3 3"/></svg>
+        <input type="text" placeholder="Search the realm..." /><kbd>⌘K</kbd>
+      </div>
+      <div class="device-list">
+        <div class="device-card"><div class="device-avatar"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 2.5h-11A2.5 2.5 0 0 0 4 5v14a2.5 2.5 0 0 0 2.5 2.5h11A2.5 2.5 0 0 0 20 19V5a2.5 2.5 0 0 0-2.5-2.5Z"/></svg><span class="status online"></span></div><div class="device-meta"><div class="device-name">Pixel 8 Pro</div><div class="device-sub"><span class="chip usb">USB</span><span>Android 14</span></div></div><span class="device-action"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></span></div>
+        <div class="device-card"><div class="device-avatar"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 2.5h-11A2.5 2.5 0 0 0 4 5v14a2.5 2.5 0 0 0 2.5 2.5h11A2.5 2.5 0 0 0 20 19V5a2.5 2.5 0 0 0-2.5-2.5Z"/></svg><span class="status online"></span></div><div class="device-meta"><div class="device-name">Galaxy S24 Ultra</div><div class="device-sub"><span class="chip wifi">Wi-Fi</span><span>192.168.1.51</span></div></div><span class="device-action"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></span></div>
+        <div class="device-card"><div class="device-avatar"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 2.5h-11A2.5 2.5 0 0 0 4 5v14a2.5 2.5 0 0 0 2.5 2.5h11A2.5 2.5 0 0 0 20 19V5a2.5 2.5 0 0 0-2.5-2.5Z"/></svg><span class="status offline"></span></div><div class="device-meta"><div class="device-name">OnePlus 11</div><div class="device-sub"><span class="chip">—</span><span>Last seen 2h</span></div></div><span class="device-action"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></span></div>
+      </div>
+      <nav class="nav-section">
+        <button class="nav-item"><span class="nav-icon">&#xE8AB;</span><span class="nav-label">Mirror</span><span class="nav-kbd">⌘1</span></button>
+        <button class="nav-item"><span class="nav-icon">&#xE93C;</span><span class="nav-label">AirPlay</span><span class="nav-kbd">⌘2</span></button>
+        <button class="nav-item"><span class="nav-icon">&#xE701;</span><span class="nav-label">Wireless</span><span class="nav-kbd">⌘3</span></button>
+        <button class="nav-item active"><span class="nav-icon">&#xE713;</span><span class="nav-label">Settings</span><span class="nav-kbd">⌘4</span></button>
+        <button class="nav-item"><span class="nav-icon">&#xE946;</span><span class="nav-label">About</span><span class="nav-kbd">⌘5</span></button>
+      </nav>
+    </aside>
+    <div class="v-divider"></div>
+    <section class="centre">
+      <div class="centre-header">
+        <div>
+          <h1 class="centre-title">Settings <span class="accent">— Incantations</span></h1>
+          <div class="centre-sub">Tune the arcane parameters of the mirror</div>
+        </div>
+        <div class="btn-row">
+          <button class="btn ghost">Reset Scrolls</button>
+          <button class="btn primary">Inscribe</button>
+        </div>
+      </div>
+      <div style="display:grid; gap:14px; max-width:820px;">
+        <div class="qc-card" style="margin:0;">
+          <div class="qc-head">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg></span>
+            <h3>Appearance</h3>
+          </div>
+          <div style="display:grid; grid-template-columns:170px 1fr; gap:14px 18px; font-size:13px; align-items:center;">
+            <div style="color:var(--cream-3); font-family:var(--font-display); font-size:11px; letter-spacing:1px; text-transform:uppercase;">Realm</div>
+            <div style="display:flex; gap:6px;">
+              <button class="btn" style="padding:5px 12px;">Light</button>
+              <button class="btn primary" style="padding:5px 12px;">Dark</button>
+              <button class="btn" style="padding:5px 12px;">System</button>
+            </div>
+            <div style="color:var(--cream-3); font-family:var(--font-display); font-size:11px; letter-spacing:1px; text-transform:uppercase;">Accent</div>
+            <div style="display:flex; gap:6px;">
+              <span title="Gold" style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg, var(--gold-1), var(--gold-4));border:2px solid var(--gold-1);cursor:pointer;box-shadow:0 0 8px var(--gold-2);"></span>
+              <span title="Cyan" style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg, #a8e8ff, #2a528a);border:2px solid #4a8bd6;cursor:pointer;"></span>
+              <span title="Purple" style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg, #d4b8ff, #5a2a8a);border:2px solid #8a4ad4;cursor:pointer;"></span>
+              <span title="Blood" style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg, #ff8080, var(--danger-dark));border:2px solid var(--danger);cursor:pointer;"></span>
+              <span title="Emerald" style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg, #8fdf50, var(--success-dark));border:2px solid var(--success);cursor:pointer;"></span>
+            </div>
+            <div style="color:var(--cream-3); font-family:var(--font-display); font-size:11px; letter-spacing:1px; text-transform:uppercase;">Compact</div>
+            <label style="display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-family:var(--font-fantasy);"><input type="checkbox" /> <span>Shrink the panels and parchment size</span></label>
+          </div>
+        </div>
+        <div class="qc-card" style="margin:0;">
+          <div class="qc-head">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="6" width="20" height="12" rx="2"/></svg></span>
+            <h3>Mirror Defaults</h3>
+          </div>
+          <div style="display:grid; grid-template-columns:170px 1fr; gap:14px 18px; font-size:13px; align-items:center;">
+            <div style="color:var(--cream-3); font-family:var(--font-display); font-size:11px; letter-spacing:1px; text-transform:uppercase;">Bitrate</div>
+            <div style="display:flex; align-items:center; gap:14px;">
+              <input type="range" min="1" max="20" value="8" style="accent-color:var(--gold-2); flex:1;" />
+              <span style="font-family:var(--font-display); color:var(--gold-1); min-width:80px;">8 MBPS</span>
+            </div>
+            <div style="color:var(--cream-3); font-family:var(--font-display); font-size:11px; letter-spacing:1px; text-transform:uppercase;">Max FPS</div>
+            <div style="display:flex; gap:6px;">
+              <button class="btn" style="padding:5px 14px;">30</button>
+              <button class="btn primary" style="padding:5px 14px;">60</button>
+              <button class="btn" style="padding:5px 14px;">120</button>
+            </div>
+            <div style="color:var(--cream-3); font-family:var(--font-display); font-size:11px; letter-spacing:1px; text-transform:uppercase;">Stay Awake</div>
+            <label style="display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-family:var(--font-fantasy);"><input type="checkbox" checked /> <span>Prevent device slumber during casting</span></label>
+          </div>
+        </div>
+        <div class="qc-card" style="margin:0;">
+          <div class="qc-head">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span>
+            <h3>Chronicle (Logs)</h3>
+          </div>
+          <div style="display:grid; grid-template-columns:170px 1fr; gap:14px 18px; font-size:13px; align-items:center;">
+            <div style="color:var(--cream-3); font-family:var(--font-display); font-size:11px; letter-spacing:1px; text-transform:uppercase;">Verbosity</div>
+            <div style="display:flex; gap:6px;">
+              <button class="btn" style="padding:5px 14px;">Debug</button>
+              <button class="btn primary" style="padding:5px 14px;">Info</button>
+              <button class="btn" style="padding:5px 14px;">Warning</button>
+              <button class="btn" style="padding:5px 14px;">Error</button>
+            </div>
+            <div style="color:var(--cream-3); font-family:var(--font-display); font-size:11px; letter-spacing:1px; text-transform:uppercase;">Max Lines</div>
+            <input type="number" value="500" style="background:var(--bg-input); border:1.5px solid var(--gold-5); border-radius:var(--radius); padding:6px 10px; color:var(--cream-1); font:inherit; width:120px; box-shadow:inset 0 2px 4px rgba(0,0,0,.5);" />
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div class="h-divider"></div>
+  <section class="log-strip">
+    <div class="log-header">
+      <div class="left"><span class="live">Chronicle</span><span>App log</span></div>
+      <div class="right"><button class="log-btn">Clear</button><button class="log-btn">Copy</button></div>
+    </div>
+    <div class="log-list">
+      <div class="log-row"><span class="ts">14:52:01</span><span class="lvl info">INFO</span><span class="msg">Realm changed to: Dark</span></div>
+      <div class="log-row"><span class="ts">14:52:34</span><span class="lvl info">INFO</span><span class="msg">Scrolls inscribed to %AppData%\RidersMirroring\settings.json</span></div>
+    </div>
+  </section>
+</div>
+
+<!-- SCENE 5 - About -->
+<div class="window scene" data-scene="about">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo"><div class="shield"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 4 5v6c0 5 3.5 9.5 8 11 4.5-1.5 8-6 8-11V5l-8-3Z"/></svg></div></div>
+      <div class="brand-text">
+        <div class="brand-name">Riders Mirroring</div>
+        <div class="brand-tag">Mirror Android &amp; iPhone, side by side</div>
+      </div>
+    </div>
+    <div class="topbar-status"><span class="dot"></span><span>v<span class="num">1.0.0</span> · Build <span class="num">2026.09.26</span></span></div>
+    <div class="window-controls"><button>&#xE921;</button><button class="close">&#xE8BB;</button></div>
+  </header>
+  <main class="main-grid">
+    <aside class="sidebar">
+      <div class="sidebar-header"><span class="sidebar-title">Devices</span><span class="sidebar-count">2 OF 3</span></div>
+      <div class="search">
+        <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="m11 11 3 3"/></svg>
+        <input type="text" placeholder="Search the realm..." /><kbd>⌘K</kbd>
+      </div>
+      <div class="device-list">
+        <div class="device-card"><div class="device-avatar"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 2.5h-11A2.5 2.5 0 0 0 4 5v14a2.5 2.5 0 0 0 2.5 2.5h11A2.5 2.5 0 0 0 20 19V5a2.5 2.5 0 0 0-2.5-2.5Z"/></svg><span class="status online"></span></div><div class="device-meta"><div class="device-name">Pixel 8 Pro</div><div class="device-sub"><span class="chip usb">USB</span><span>Android 14</span></div></div><span class="device-action"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></span></div>
+        <div class="device-card"><div class="device-avatar"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 2.5h-11A2.5 2.5 0 0 0 4 5v14a2.5 2.5 0 0 0 2.5 2.5h11A2.5 2.5 0 0 0 20 19V5a2.5 2.5 0 0 0-2.5-2.5Z"/></svg><span class="status online"></span></div><div class="device-meta"><div class="device-name">Galaxy S24 Ultra</div><div class="device-sub"><span class="chip wifi">Wi-Fi</span><span>192.168.1.51</span></div></div><span class="device-action"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></span></div>
+        <div class="device-card"><div class="device-avatar"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 2.5h-11A2.5 2.5 0 0 0 4 5v14a2.5 2.5 0 0 0 2.5 2.5h11A2.5 2.5 0 0 0 20 19V5a2.5 2.5 0 0 0-2.5-2.5Z"/></svg><span class="status offline"></span></div><div class="device-meta"><div class="device-name">OnePlus 11</div><div class="device-sub"><span class="chip">—</span><span>Last seen 2h</span></div></div><span class="device-action"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></span></div>
+      </div>
+      <nav class="nav-section">
+        <button class="nav-item"><span class="nav-icon">&#xE8AB;</span><span class="nav-label">Mirror</span><span class="nav-kbd">⌘1</span></button>
+        <button class="nav-item"><span class="nav-icon">&#xE93C;</span><span class="nav-label">AirPlay</span><span class="nav-kbd">⌘2</span></button>
+        <button class="nav-item"><span class="nav-icon">&#xE701;</span><span class="nav-label">Wireless</span><span class="nav-kbd">⌘3</span></button>
+        <button class="nav-item"><span class="nav-icon">&#xE713;</span><span class="nav-label">Settings</span><span class="nav-kbd">⌘4</span></button>
+        <button class="nav-item active"><span class="nav-icon">&#xE946;</span><span class="nav-label">About</span><span class="nav-kbd">⌘5</span></button>
+      </nav>
+    </aside>
+    <div class="v-divider"></div>
+    <section class="centre" style="display:flex; align-items:center; justify-content:center;">
+      <div style="text-align:center; max-width:520px;">
+        <div class="hero-icon" style="margin:0 auto 28px; width:144px; height:144px;">
+          <div class="shield-bg" style="filter:drop-shadow(0 8px 24px rgba(255,215,0,.45));">
+            <svg viewBox="0 0 64 64" width="80" height="80" fill="#3d2817"><path d="M32 6 12 12v16c0 13 9 24 20 28 11-4 20-15 20-28V12L32 6Z"/></svg>
+          </div>
+        </div>
+        <h1 style="font-family:var(--font-deco); font-size:36px; font-weight:800; color:var(--gold-1); margin-bottom:8px; letter-spacing:2px; text-shadow:0 2px 0 var(--gold-5), 0 4px 12px rgba(0,0,0,.6);">Riders Mirroring</h1>
+        <div style="font-family:var(--font-fantasy); font-style:italic; color:var(--cream-3); margin-bottom:32px; font-size:14px;">Version 1.0.0 · Build 2026.09.26 · .NET 8 + WPF</div>
+        <div style="display:flex; gap:12px; justify-content:center; margin-bottom:36px;">
+          <button class="btn">GitHub Portal</button>
+          <button class="btn">Seek Updates</button>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:14px;">
+          <div class="stat"><div class="stat-label">scrcpy</div><div class="stat-value" style="font-size:18px;">v2.4</div></div>
+          <div class="stat"><div class="stat-label">UxPlay</div><div class="stat-value" style="font-size:18px;">v1.71</div></div>
+          <div class="stat"><div class="stat-label">License</div><div class="stat-value" style="font-size:18px;">MIT</div></div>
+        </div>
+        <div style="margin-top:32px; padding-top:22px; border-top:1px solid var(--gold-5); color:var(--cream-4); font-family:var(--font-fantasy); font-style:italic; font-size:12px;">
+          Forged with ☕ and 🏍️ by Riders Software
+        </div>
+      </div>
+    </section>
+  </main>
+  <div class="h-divider"></div>
+  <section class="log-strip">
+    <div class="log-header"><div class="left"><span class="live">Chronicle</span><span>App log</span></div><div class="right"><button class="log-btn">Clear</button><button class="log-btn">Copy</button></div></div>
+    <div class="log-list">
+      <div class="log-row"><span class="ts">14:52:01</span><span class="lvl info">INFO</span><span class="msg">App conjured in <span class="num">412</span> ms</span></div>
+    </div>
+  </section>
+</div>
+
+<script>
+  const buttons = document.querySelectorAll('.variant-bar button');
+  const scenes  = document.querySelectorAll('.scene');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.scene;
+      buttons.forEach(b => b.classList.toggle('active', b === btn));
+      scenes.forEach(s => s.classList.toggle('active', s.dataset.scene === target));
+    });
+  });
+</script>
+
+</body>
+</html>

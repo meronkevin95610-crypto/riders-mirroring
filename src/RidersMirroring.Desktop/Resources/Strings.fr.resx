@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="AppTitle"><value>Riders Mirroring</value></data>
+
+  <data name="SidebarDevicesHeader"><value>APPAREILS</value></data>
+  <data name="LogStripLiveLogLabel"><value>JOURNAL EN DIRECT</value></data>
+
+  <data name="AirPlayTitle"><value>Récepteur AirPlay</value></data>
+  <data name="AirPlayDescription"><value>Démarrez le serveur AirPlay local pour qu'un iPhone ou iPad puisse refléter son écran sur ce PC. UxPlay sert de backend — il est lancé comme processus séparé et analysé pour détecter les connexions.</value></data>
+  <data name="AirPlayReceiverStatus"><value>État du récepteur</value></data>
+  <data name="AirPlayConnectedDevices"><value>Appareils connectés</value></data>
+  <data name="AirPlayStartButton"><value>Démarrer</value></data>
+  <data name="AirPlayStopButton"><value>Arrêter</value></data>
+
+  <data name="MirrorEmptyTitle"><value>📱 Aucun appareil sélectionné</value></data>
+  <data name="MirrorEmptyDescription"><value>Branchez votre smartphone Android via un câble USB avec le débogage USB activé, ou connectez-le en Wi-Fi. Sélectionnez ensuite l'appareil dans la barre latérale pour démarrer le mirroring.</value></data>
+  <data name="MirrorEmptyTipHeader"><value>💡 Astuce de connexion rapide :</value></data>
+  <data name="MirrorEmptyTipBody"><value>Rendez-vous dans Paramètres &gt; Options de développement &gt; activez Débogage USB. Pour le Wi-Fi, utilisez l'onglet 'Wireless' ci-dessous pour scanner le QR Code.</value></data>
+  <data name="MirrorSerialLabel"><value>Numéro de série :</value></data>
+  <data name="MirrorStatusLabel"><value>• Statut :</value></data>
+  <data name="MirrorRunningBadge"><value>EN COURS</value></data>
+  <data name="MirrorReadyBadge"><value>PRÊT</value></data>
+  <data name="MirrorLatencyBadge"><value>Diffusion plein écran ou fenêtrée avec latence ultra-faible (30-60 ms)</value></data>
+  <data name="MirrorStartButton"><value>▶ DÉMARRER LE MIRRORING</value></data>
+  <data name="MirrorStopButton"><value>■ ARRÊTER LE MIRRORING</value></data>
+  <data name="MirrorWaitingForVideo"><value>En attente du flux vidéo…</value></data>
+  <data name="MirrorSectionStreamingOptions"><value>Options de diffusion &amp; affichage</value></data>
+  <data name="MirrorSectionStreamingOptionsHint"><value>Ajustez les paramètres avant de lancer la session.</value></data>
+  <data name="MirrorOptionKeepAwake"><value>Garder l'écran du smartphone allumé</value></data>
+  <data name="MirrorOptionTurnScreenOff"><value>Éteindre l'écran du smartphone (économie d'énergie)</value></data>
+  <data name="MirrorOptionAlwaysOnTop"><value>Fenêtre toujours au premier plan</value></data>
+  <data name="MirrorOptionFullscreen"><value>Démarrer directement en plein écran</value></data>
+  <data name="MirrorOptionAudio"><value>Transmettre le son du smartphone (Android 10+)</value></data>
+  <data name="MirrorOptionShowTouches"><value>Afficher les touches tactiles à l'écran</value></data>
+  <data name="MirrorOptionFpsLabel"><value>Images par seconde (FPS) :</value></data>
+  <data name="MirrorOptionBitrateLabel"><value>Débit vidéo (Mbps) :</value></data>
+  <data name="MirrorOptionResolutionLabel"><value>Résolution maximale (px) :</value></data>
+  <data name="MirrorSectionRemote"><value>Télécommande &amp; Contrôles rapides</value></data>
+  <data name="MirrorSectionRemoteHint"><value>Pilotez votre appareil en direct depuis l'application.</value></data>
+  <data name="MirrorSessionInfo"><value>Information session</value></data>
+
+  <data name="WirelessHostTitle"><value>Hôte sans fil</value></data>
+  <data name="WirelessHostDescription"><value>Jumelez un appareil Android en Wi-Fi sans USB. Scannez le QR code avec votre téléphone pour rejoindre le réseau, puis connectez-vous à l'adresse affichée ci-dessous.</value></data>
+  <data name="WirelessHostWifiNetwork"><value>Réseau Wi-Fi</value></data>
+  <data name="WirelessHostWifiNetworkHint"><value>Saisissez les identifiants du réseau Wi-Fi auquel votre téléphone doit se connecter. Riders Mirroring reste sur votre réseau actuel.</value></data>
+  <data name="WirelessHostSsidLabel"><value>SSID</value></data>
+  <data name="WirelessHostPasswordLabel"><value>Mot de passe</value></data>
+  <data name="WirelessHostOpenNetworksWarning"><value>Réseaux WPA uniquement — les réseaux ouverts ne sont pas encore pris en charge.</value></data>
+  <data name="WirelessHostGenerateButton"><value>Générer le QR code</value></data>
+  <data name="WirelessHostStatusLabel"><value>Statut</value></data>
+
+  <data name="SettingsTitle"><value>Paramètres</value></data>
+  <data name="SettingsDescription"><value>Personnalisez l'apparence de Riders Mirroring.</value></data>
+  <data name="SettingsThemeHeader"><value>Thème</value></data>
+  <data name="SettingsThemeHint"><value>Le mode sombre est plus reposant la nuit. Le mode clair est plus lisible en plein jour.</value></data>
+  <data name="SettingsAccentColour"><value>Couleur d'accent</value></data>
+
+  <data name="AboutThirdPartyComponents"><value>Composants tiers redistribués</value></data>
+  <data name="AboutThirdPartyHint"><value>Cette application redistribue les composants open-source suivants. Les textes de licence complets sont fournis dans le dossier licences/.</value></data>
+  <data name="AboutColumnComponent"><value>COMPOSANT</value></data>
+  <data name="AboutColumnLicence"><value>LICENCE</value></data>
+  <data name="AboutColumnUsage"><value>UTILISATION</value></data>
+  <data name="AboutGplNote"><value>⚠️ Note GPLv3 : UxPlay est lancé en tant que processus séparé — la combinaison est traitée comme une agrégation, non une œuvre dérivée. La source d'UxPlay et la licence complète sont livrées avec ce binaire.</value></data>
+  <data name="AboutBuildInfo"><value>Informations de build</value></data>
+  <data name="AboutOpenRepo"><value>🔗 Ouvrir le dépôt GitHub</value></data>
+  <data name="AboutLicencesButton"><value>📄 Licences</value></data>
+</root>

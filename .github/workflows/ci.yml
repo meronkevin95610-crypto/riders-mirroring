@@ -1,0 +1,133 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  DOTNET_VERSION: "8.0.x"
+  CONFIGURATION: Release
+
+jobs:
+  test:
+    name: Build & test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Cache NuGet
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore
+        run: dotnet restore RidersMirroring.slnx
+
+      - name: Build
+        run: dotnet build RidersMirroring.slnx -c ${{ env.CONFIGURATION }} --no-restore /p:UseSharedCompilation=false
+
+      - name: Test (Core)
+        run: dotnet test tests/RidersMirroring.Core.Tests/RidersMirroring.Core.Tests.csproj -c ${{ env.CONFIGURATION }} --no-build --nologo --logger "trx;LogFileName=core.trx"
+
+      - name: Test (Desktop)
+        run: dotnet test tests/RidersMirroring.Desktop.Tests/RidersMirroring.Desktop.Tests.csproj -c ${{ env.CONFIGURATION }} --no-build --nologo --logger "trx;LogFileName=desktop.trx"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.os }}
+          path: |
+            **/*.trx
+
+  msi:
+    name: Build MSI installer
+    needs: test
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install WiX 4
+        run: dotnet tool install --global wix --version 4.0.5
+
+      - name: Publish Desktop (win-x64, framework-dependent)
+        run: >
+          dotnet publish src/RidersMirroring.Desktop/RidersMirroring.Desktop.csproj
+          -c ${{ env.CONFIGURATION }} -r win-x64 --self-contained false
+          -p:PublishDir=$(pwd)/installer/RidersMirroring.Installer/publish/win-x64
+          -p:WindowsPackageType=None
+
+      - name: Build MSI
+        working-directory: installer/RidersMirroring.Installer
+        run: dotnet build -c ${{ env.CONFIGURATION }} /p:Version=1.0.0 /p:UpgradeCode=8B2E5C7A-3D8F-4B6E-9E1A-2C4D6F8A0B1C /p:ProductCode=*
+
+      - name: List MSI artifacts
+        run: ls -la bin/${{ env.CONFIGURATION }}/x64/*.msi 2>/dev/null || true
+
+      - name: Upload MSI
+        uses: actions/upload-artifact@v4
+        with:
+          name: riders-mirroring-msi
+          path: installer/RidersMirroring.Installer/bin/**/*.msi
+          if-no-files-found: warn
+
+  licenses:
+    name: License compliance check
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check every major package has a license file
+        shell: pwsh
+        run: |
+          $packages = @(
+            @{ Id = 'AdvancedSharpAdbClient'; File = 'AdvancedSharpAdbClient-LICENSE.txt' },
+            @{ Id = 'Serilog';                File = 'Serilog-LICENSE.txt' },
+            @{ Id = 'QRCoder';                File = 'QRCoder-LICENSE.txt' }
+          )
+          $missing = @()
+          foreach ($p in $packages) {
+            $path = "licenses/$($p.File)"
+            if (-not (Test-Path $path)) { $missing += $p.Id }
+          }
+          if ($missing.Count -gt 0) {
+            Write-Host "::error::Missing license files for: $($missing -join ', ')"
+            exit 1
+          }
+          Write-Host "All $($packages.Count) license files present."
+
+      - name: Verify UxPlay & scrcpy NOTICE files present
+        shell: pwsh
+        run: |
+          $required = @('uxplay-NOTICE.txt', 'scrcpy-NOTICE.txt', 'ffmpeg-NOTICE.txt')
+          foreach ($r in $required) {
+            if (-not (Test-Path "licenses/$r")) {
+              Write-Host "::error::Missing licenses/$r"
+              exit 1
+            }
+          }
+          Write-Host "All vendor NOTICE files present."

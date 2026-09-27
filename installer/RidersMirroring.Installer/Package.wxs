@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+
+  <!--
+    Single-file MSI for Riders Mirroring.
+    Layout:
+      C:\Program Files\Riders Mirroring\   <- INSTALLFOLDER
+        RidersMirroring.Desktop.exe + .dlls
+        Resources\... (theme + converters)
+    HarvestProjects (see .wixproj) emits a ComponentGroup named
+    "HarvestedFiles" with one Component per published file.
+  -->
+
+  <Package Name="Riders Mirroring"
+           Manufacturer="Riders Corp"
+           Version="$(Version)"
+           UpgradeCode="$(UpgradeCode)">
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of Riders Mirroring is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Feature Id="Main"
+             Title="Riders Mirroring"
+             Description="Mirror Android and iPhone devices to your Windows PC."
+             Level="1">
+      <ComponentGroupRef Id="HarvestedFiles" />
+    </Feature>
+  </Package>
+
+  <Fragment>
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="Riders Mirroring" />
+    </StandardDirectory>
+    <DirectoryRef Id="INSTALLFOLDER" />
+  </Fragment>
+
+</Wix>

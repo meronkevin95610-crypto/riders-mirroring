@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Riders.Mirroring.RawTest</RootNamespace>
+    <AssemblyName>riders-raw-test</AssemblyName>
+    <!--
+      Console-only dev tool — NOT shipped with the application. The
+      Desktop installer / publish profile does NOT reference this project.
+      CI excludes RidersMirroring.RawTest from build matrix.
+    -->
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\RidersMirroring.Core\RidersMirroring.Core.csproj" />
+  </ItemGroup>
+
+  <!--
+    Copy the vendored LGPL FFmpeg DLLs at the FLAT ROOT of the output
+    directory. FFmpeg.AutoGen 7.x uses a FunctionResolver that calls
+    LoadLibrary(Path.Combine(ffmpeg.RootPath, "avcodec-63.dll")), so
+    just pointing RootPath at vendor\ffmpeg\bin should work — but on
+    Windows, the underlying search also requires the DLLs to be
+    loadable via the standard DLL search order. Copying them flat
+    next to riders-raw-test.exe guarantees that regardless of any
+    PATH/CWD quirks. Mirrors the same approach Core.Tests uses.
+  -->
+  <ItemGroup>
+    <None Include="..\..\vendor\ffmpeg\bin\*.dll"
+          Link="%(Filename)%(Extension)"
+          CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

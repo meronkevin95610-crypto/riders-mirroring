@@ -1,0 +1,20 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/RidersMirroring.Core/RidersMirroring.Core.csproj" />
+    <Project Path="src/RidersMirroring.Desktop/RidersMirroring.Desktop.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/RidersMirroring.Benchmarks/RidersMirroring.Benchmarks.csproj" />
+    <Project Path="tests/RidersMirroring.Core.Tests/RidersMirroring.Core.Tests.csproj" />
+    <Project Path="tests/RidersMirroring.Desktop.Tests/RidersMirroring.Desktop.Tests.csproj" />
+    <Project Path="tests/RidersMirroring.IntegrationTests/RidersMirroring.IntegrationTests.csproj" />
+  </Folder>
+  <Folder Name="/installer/">
+    <Project Path="installer/RidersMirroring.Installer/RidersMirroring.Installer.wixproj" />
+  </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/ffmpeg-probe/ffmpeg-probe.csproj" />
+    <Project Path="tools/RidersMirroring.RawTest/RidersMirroring.RawTest.csproj" />
+    <Project Path="tools/UxPlayStub/UxPlayStub.csproj" />
+  </Folder>
+</Solution>

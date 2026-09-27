@@ -1,0 +1,810 @@
+﻿<Window x:Class="Riders.Mirroring.Desktop.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:Riders.Mirroring.Desktop.ViewModels"
+        xmlns:views="clr-namespace:Riders.Mirroring.Desktop.Views"
+        xmlns:res="clr-namespace:Riders.Mirroring.Desktop.Resources"
+        xmlns:theming="clr-namespace:Riders.Mirroring.Desktop.Theming"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Title="{x:Static res:Strings.AppTitle}"
+        Width="1600" Height="900"
+        MinWidth="1280" MinHeight="720"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="CanMinimize"
+        Background="{DynamicResource BackgroundCanvasBrush}"
+        Foreground="{DynamicResource ForegroundBrush}"
+        FontFamily="{DynamicResource FontUi}"
+        FontSize="{DynamicResource UiFontSize}"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True">
+
+    <Window.Resources>
+        <!-- =====================================================
+             Status pill — Dofus MMORPG style with ornate ornaments
+             ===================================================== -->
+        <Style x:Key="StatusPillStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding" Value="10,6" />
+            <Setter Property="BorderThickness" Value="1.5" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Gold4Brush}" />
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Offset="0" Color="{DynamicResource SurfaceElevatedColor}" />
+                        <GradientStop Offset="1" Color="{DynamicResource SurfaceColor}" />
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- =====================================================
+             Device card — gold border, bevel, status indicator dot
+             ===================================================== -->
+        <Style x:Key="DeviceCardBorder" TargetType="Border">
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding" Value="10,8" />
+            <Setter Property="BorderThickness" Value="1.5" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Gold5Brush}" />
+            <Setter Property="Margin" Value="0,4,0,0" />
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Offset="0" Color="{DynamicResource SurfaceColor}" />
+                        <GradientStop Offset="1" Color="{DynamicResource SurfaceElevatedColor}" />
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="{DynamicResource Gold3Brush}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- =====================================================
+             Status dot — radial gradient per state
+             ===================================================== -->
+        <Style x:Key="StatusDotBase" TargetType="Ellipse">
+            <Setter Property="Width" Value="10" />
+            <Setter Property="Height" Value="10" />
+            <Setter Property="Stroke" Value="{DynamicResource SurfaceBrush}" />
+            <Setter Property="StrokeThickness" Value="2" />
+        </Style>
+
+        <!-- =====================================================
+             Log row — pill-style log level
+             ===================================================== -->
+        <Style x:Key="LogLevelPill" TargetType="Border">
+            <Setter Property="CornerRadius" Value="2" />
+            <Setter Property="Padding" Value="6,1" />
+            <Setter Property="MinWidth" Value="48" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+
+        <!-- =====================================================
+             Sidebar nav button — slot/spell style
+             ===================================================== -->
+        <Style x:Key="SidebarNavButtonStyle" TargetType="RadioButton">
+            <Setter Property="FontFamily" Value="{DynamicResource FontDisplay}" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Padding" Value="14,9" />
+            <Setter Property="Margin" Value="0,2" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Foreground" Value="{DynamicResource ForegroundMutedBrush}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="Bd"
+                                CornerRadius="6"
+                                BorderThickness="1.5"
+                                BorderBrush="Transparent"
+                                Background="Transparent"
+                                Padding="{TemplateBinding Padding}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="28" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0"
+                                        Width="24" Height="24"
+                                        CornerRadius="4"
+                                        BorderThickness="1"
+                                        BorderBrush="{DynamicResource Bronze3Brush}"
+                                        Background="{DynamicResource BackgroundCanvasBrush}"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Converter={StaticResource AppViewIconConverter}}"
+                                                   FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                               FontSize="14"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Foreground="{DynamicResource Gold4Brush}" />
+                                </Border>
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding Converter={StaticResource AppViewLabelConverter}}"
+                                           Margin="10,0,0,0"
+                                           VerticalAlignment="Center"
+                                           TextElement.FontFamily="{TemplateBinding FontFamily}"
+                                           TextElement.FontWeight="{TemplateBinding FontWeight}"
+                                           TextElement.FontSize="{TemplateBinding FontSize}"
+                                           TextElement.Foreground="{TemplateBinding Foreground}" />
+                                <TextBlock Grid.Column="2"
+                                           Text="{Binding Converter={StaticResource AppViewShortcutConverter}}"
+                                           VerticalAlignment="Center"
+                                           FontFamily="Cascadia Mono, Consolas"
+                                           FontSize="10"
+                                           Padding="4,1"
+                                           Foreground="{DynamicResource Gold4Brush}" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                            <GradientStop Offset="0" Color="#33D4AF37" />
+                                            <GradientStop Offset="1" Color="Transparent" />
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource Gold5Brush}" />
+                                <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Bd" Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                            <GradientStop Offset="0" Color="#2ED4AF37" />
+                                            <GradientStop Offset="1" Color="#0AD4AF37" />
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource Gold3Brush}" />
+                                <Setter Property="Foreground" Value="{DynamicResource Gold1Brush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="64" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="1" />
+            <RowDefinition Height="208" />
+        </Grid.RowDefinitions>
+
+        <!-- ============================================================ -->
+        <!-- Row 0 - Top bar (heraldic banner with gold trim)               -->
+        <!-- ============================================================ -->
+        <Border Grid.Row="0"
+                Background="{DynamicResource BackgroundCanvasBrush}"
+                BorderBrush="{DynamicResource Gold3Brush}"
+                BorderThickness="0,0,0,3">
+            <Border.Effect>
+                <DropShadowEffect Color="#1A1626" Opacity="0.6" ShadowDepth="2" BlurRadius="6" />
+            </Border.Effect>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="312" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Brand block : shield + name + tagline -->
+                <StackPanel Grid.Column="0"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Margin="20,0">
+                    <!-- Shield logo - clip-path approximating a Dofus coat-of-arms -->
+                    <Grid Width="44" Height="44">
+                        <Border x:Name="ShieldClip"
+                                CornerRadius="0"
+                                BorderThickness="2"
+                                BorderBrush="{DynamicResource Gold1Brush}">
+                            <Border.Clip>
+                                <PathGeometry Figures="M 22,0 L 44,8 L 44,29 L 22,44 L 0,29 L 0,8 Z" />
+                            </Border.Clip>
+                            <Grid>
+                                <Grid.Background>
+                                    <RadialGradientBrush Center="0.35,0.25" RadiusX="0.7" RadiusY="0.7">
+                                        <GradientStop Offset="0"   Color="#FFF4C1" />
+                                        <GradientStop Offset="0.5" Color="#D4AF37" />
+                                        <GradientStop Offset="1"   Color="#8B6F1A" />
+                                    </RadialGradientBrush>
+                                </Grid.Background>
+                                <Path Data="M 22,8 L 35,12 L 35,24 L 22,36 L 9,24 L 9,12 Z"
+                                      Stroke="#5C4A2A"
+                                      StrokeThickness="1.5"
+                                      Fill="Transparent" />
+                                <TextBlock Text="R"
+                                           FontFamily="{DynamicResource FontDecorative}"
+                                           FontWeight="Black"
+                                           FontSize="22"
+                                           Foreground="#5C4A2A"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Margin="0,2,0,0" />
+                            </Grid>
+                        </Border>
+                    </Grid>
+                    <StackPanel Margin="14,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding ProductName}"
+                                   FontFamily="{DynamicResource FontDecorative}"
+                                   FontWeight="Black"
+                                   FontSize="17"
+                                   Foreground="{DynamicResource Gold2Brush}" />
+                        <TextBlock Text="{Binding ProductTagline}"
+                                   FontFamily="{DynamicResource FontFantasy}"
+                                   FontStyle="Italic"
+                                   FontSize="11"
+                                   Foreground="{DynamicResource ForegroundMutedBrush}"
+                                   Margin="0,1,0,0" />
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Center status pill -->
+                <Border Grid.Column="1"
+                        Style="{StaticResource StatusPillStyle}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#x2756;"
+                                   Foreground="{DynamicResource Gold4Brush}"
+                                   FontSize="10"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,8,0" />
+                        <Ellipse Width="10" Height="10"
+                                 VerticalAlignment="Center"
+                                 Margin="0,0,8,0">
+                            <Ellipse.Fill>
+                                <RadialGradientBrush Center="0.3,0.3" RadiusX="0.7" RadiusY="0.7">
+                                    <GradientStop Offset="0"   Color="#8FDF50" />
+                                    <GradientStop Offset="0.6" Color="{DynamicResource SuccessColor}" />
+                                    <GradientStop Offset="1"   Color="{DynamicResource SuccessDarkColor}" />
+                                </RadialGradientBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <TextBlock Text="{Binding TopBarStatus}"
+                                   FontFamily="{DynamicResource FontFantasy}"
+                                   FontSize="13"
+                                   Foreground="{DynamicResource ForegroundSecondaryBrush}"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Text="&#x2756;"
+                                   Foreground="{DynamicResource Gold4Brush}"
+                                   FontSize="10"
+                                   VerticalAlignment="Center"
+                                   Margin="8,0,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Window controls -->
+                <StackPanel Grid.Column="2"
+                            Orientation="Horizontal"
+                            Margin="0,0,12,0">
+                    <Button Width="38" Height="38"
+                            Margin="2,0"
+                            Padding="0"
+                            BorderThickness="1.5"
+                            BorderBrush="{DynamicResource Gold5Brush}"
+                            Background="{DynamicResource SurfaceElevatedBrush}"
+                            Foreground="{DynamicResource Gold3Brush}"
+                            FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                            FontSize="11"
+                            ToolTip="Minimise"
+                            Click="OnMinimiseClick"
+                            Content="&#xE921;" />
+                    <Button Width="38" Height="38"
+                            Margin="2,0"
+                            Padding="0"
+                            BorderThickness="1.5"
+                            BorderBrush="#FF7070"
+                            Background="{DynamicResource ErrorBrush}"
+                            Foreground="{DynamicResource ForegroundBrush}"
+                            FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                            FontSize="11"
+                            ToolTip="Close"
+                            Click="OnCloseClick"
+                            Content="&#xE8BB;" />
+                </StackPanel>
+            </Grid>
+        </Border>
+        <!-- ============================================================ -->
+        <!-- Row 1 - Main content (sidebar + centre pane)                   -->
+        <!-- ============================================================ -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="312" />
+                <ColumnDefinition Width="1" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- ===== Sidebar ===== -->
+            <Grid Grid.Column="0"
+                  Background="{DynamicResource SidebarBrush}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- Section header -->
+                <Grid Grid.Row="0" Margin="14,18,14,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               Text="{x:Static res:Strings.SidebarDevicesHeader}"
+                               FontFamily="{DynamicResource FontDisplay}"
+                               FontWeight="Bold"
+                               FontSize="12"
+                               Foreground="{DynamicResource Gold3Brush}" />
+                    <Border Grid.Column="1"
+                            Background="{DynamicResource SurfaceElevatedBrush}"
+                            BorderBrush="{DynamicResource Gold5Brush}"
+                            BorderThickness="1.5"
+                            CornerRadius="4"
+                            Padding="8,2">
+                        <TextBlock Text="{Binding DeviceCountLabel}"
+                                   FontFamily="{DynamicResource FontDisplay}"
+                                   FontWeight="Bold"
+                                   FontSize="11"
+                                   Foreground="{DynamicResource Gold2Brush}" />
+                    </Border>
+                </Grid>
+
+                <!-- Search box (gold border + focus glow) -->
+                <Border Grid.Row="1"
+                        Background="{DynamicResource InputBackgroundBrush}"
+                        BorderBrush="{DynamicResource Gold5Brush}"
+                        BorderThickness="2"
+                        CornerRadius="6"
+                        Margin="14,0,14,8"
+                        Padding="8,6">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="&#xE721;"
+                                   FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                   FontSize="13"
+                                   Foreground="{DynamicResource Gold3Brush}"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,8,0" />
+                        <TextBox Grid.Column="1"
+                                 x:Name="DeviceSearchBox"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 Foreground="{DynamicResource ForegroundBrush}"
+                                 CaretBrush="{DynamicResource Gold2Brush}"
+                                 FontFamily="{DynamicResource FontFantasy}"
+                                 FontSize="13"
+                                 VerticalAlignment="Center"
+                                 TextChanged="OnDeviceSearchChanged" />
+                    </Grid>
+                </Border>
+
+                <!-- Device list -->
+                <ListBox Grid.Row="2"
+                         x:Name="DeviceList"
+                         ItemsSource="{Binding FilteredDevices}"
+                         SelectedItem="{Binding SelectedDevice}"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         Margin="10,0"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         ScrollViewer.CanContentScroll="True"
+                         VirtualizingPanel.IsVirtualizing="True"
+                         VirtualizingPanel.VirtualizationMode="Recycling"
+                         VirtualizingPanel.ScrollUnit="Item"
+                         HorizontalContentAlignment="Stretch">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="Margin" Value="0,0,0,6" />
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border x:Name="Bd"
+                                                CornerRadius="6"
+                                                BorderThickness="1.5"
+                                                Padding="10,8"
+                                                BorderBrush="{DynamicResource Gold5Brush}"
+                                                Margin="0">
+                                            <Border.Background>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                    <GradientStop Offset="0" Color="{DynamicResource SurfaceColor}" />
+                                                    <GradientStop Offset="1" Color="{DynamicResource SurfaceElevatedColor}" />
+                                                </LinearGradientBrush>
+                                            </Border.Background>
+                                            <ContentPresenter />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource Gold3Brush}" />
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource Gold2Brush}" />
+                                                <Setter TargetName="Bd" Property="Background">
+                                                    <Setter.Value>
+                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                            <GradientStop Offset="0" Color="#5A4A78" />
+                                                            <GradientStop Offset="1" Color="#3A2A58" />
+                                                        </LinearGradientBrush>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:DeviceListItem}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="36" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <!-- Avatar -->
+                                <Border Grid.Column="0"
+                                        Width="32" Height="32"
+                                        CornerRadius="4"
+                                        BorderThickness="1.5"
+                                        BorderBrush="{DynamicResource Gold5Brush}"
+                                        Background="{DynamicResource BackgroundCanvasBrush}"
+                                        VerticalAlignment="Center">
+                                    <Border BorderBrush="Transparent"
+                                            BorderThickness="0">
+                                        <TextBlock Text="&#xE8AB;"
+                                                   FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                                   FontSize="14"
+                                                   Foreground="{DynamicResource Gold3Brush}"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center" />
+                                    </Border>
+                                </Border>
+                                <!-- Status dot overlay -->
+                                <Ellipse Grid.Column="0"
+                                         Width="10" Height="10"
+                                         HorizontalAlignment="Right"
+                                         VerticalAlignment="Bottom"
+                                         Margin="0,0,2,0"
+                                         Stroke="{DynamicResource SurfaceBrush}"
+                                         StrokeThickness="2">
+                                    <Ellipse.Style>
+                                        <Style TargetType="Ellipse">
+                                            <Setter Property="Fill" Value="{DynamicResource ForegroundDisabledBrush}" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding State}" Value="Connected">
+                                                    <Setter Property="Fill">
+                                                        <Setter.Value>
+                                                            <RadialGradientBrush Center="0.3,0.3" RadiusX="0.7" RadiusY="0.7">
+                                                                <GradientStop Offset="0"   Color="#8FDF50" />
+                                                                <GradientStop Offset="0.6" Color="{DynamicResource SuccessColor}" />
+                                                                <GradientStop Offset="1"   Color="{DynamicResource SuccessDarkColor}" />
+                                                            </RadialGradientBrush>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding State}" Value="Connecting">
+                                                    <Setter Property="Fill">
+                                                        <Setter.Value>
+                                                            <RadialGradientBrush Center="0.3,0.3" RadiusX="0.7" RadiusY="0.7">
+                                                                <GradientStop Offset="0"   Color="#FFCE60" />
+                                                                <GradientStop Offset="0.6" Color="{DynamicResource WarningColor}" />
+                                                                <GradientStop Offset="1"   Color="{DynamicResource WarningDarkColor}" />
+                                                            </RadialGradientBrush>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding State}" Value="Error">
+                                                    <Setter Property="Fill" Value="{DynamicResource ErrorBrush}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Ellipse.Style>
+                                </Ellipse>
+                                <!-- Device name + sub -->
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0">
+                                    <TextBlock Text="{Binding DisplayName}"
+                                               FontFamily="{DynamicResource FontDisplay}"
+                                               FontWeight="Bold"
+                                               FontSize="13"
+                                               TextTrimming="CharacterEllipsis"
+                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                    <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                        <Border Background="{DynamicResource BackgroundCanvasBrush}"
+                                                BorderBrush="{DynamicResource Bronze3Brush}"
+                                                BorderThickness="1"
+                                                CornerRadius="2"
+                                                Padding="4,1"
+                                                Margin="0,0,6,0">
+                                            <TextBlock Text="{Binding KindLabel}"
+                                                       FontFamily="{DynamicResource FontDisplay}"
+                                                       FontWeight="Bold"
+                                                       FontSize="9"
+                                                       Foreground="{DynamicResource ForegroundMutedBrush}" />
+                                        </Border>
+                                        <TextBlock Text="{Binding StateLabel}"
+                                                   FontFamily="{DynamicResource FontFantasy}"
+                                                   FontStyle="Italic"
+                                                   FontSize="11"
+                                                   Foreground="{DynamicResource ForegroundMutedBrush}"
+                                                   VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </StackPanel>
+                                <!-- Chevron -->
+                                <TextBlock Grid.Column="2"
+                                           Text="&#xE76C;"
+                                           FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                           FontSize="11"
+                                           Foreground="{DynamicResource Gold5Brush}"
+                                           VerticalAlignment="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <!-- Bottom nav (spell slot style) -->
+                <StackPanel Grid.Row="3" Margin="14,14,14,18">
+                    <Grid Margin="0,0,0,8">
+                        <Line X1="0" X2="1" Stretch="Fill"
+                              Stroke="{DynamicResource Gold5Brush}"
+                              StrokeThickness="1" />
+                        <Border Background="{DynamicResource SidebarBrush}"
+                                HorizontalAlignment="Center"
+                                Padding="8,0">
+                            <TextBlock Text="{x:Static res:Strings.NavSectionLabel}"
+                                       FontFamily="{DynamicResource FontDisplay}"
+                                       FontWeight="Bold"
+                                       FontSize="9"
+                                       Foreground="{DynamicResource Gold4Brush}" />
+                        </Border>
+                    </Grid>
+                    <ItemsControl ItemsSource="{Binding AvailableViews}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <RadioButton Style="{StaticResource SidebarNavButtonStyle}"
+                                             GroupName="AppView"
+                                             Tag="{Binding}">
+                                    <RadioButton.IsChecked>
+                                        <MultiBinding Converter="{StaticResource AppViewMatchConverter}">
+                                            <Binding Path="DataContext.SelectedView" RelativeSource="{RelativeSource AncestorType=Window}" />
+                                            <Binding Path="Tag" RelativeSource="{RelativeSource Self}" />
+                                        </MultiBinding>
+                                    </RadioButton.IsChecked>
+                                    <RadioButton.Command>
+                                        <Binding Path="DataContext.SelectViewCommand" RelativeSource="{RelativeSource AncestorType=Window}" />
+                                    </RadioButton.Command>
+                                    <RadioButton.CommandParameter>
+                                        <Binding />
+                                    </RadioButton.CommandParameter>
+                                </RadioButton>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Grid>
+
+            <Rectangle Grid.Column="1" Fill="{DynamicResource Gold5Brush}" />
+
+            <!-- ===== Centre pane ===== -->
+            <Grid Grid.Column="2" Background="{DynamicResource BackgroundCanvasBrush}">
+                <ContentControl>
+                    <ContentControl.Style>
+                        <Style TargetType="ContentControl">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <views:MirrorView DataContext="{Binding Mirror}" />
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedView}" Value="Hub">
+                                    <Setter Property="Content">
+                                        <Setter.Value>
+                                            <views:HubView DataContext="{Binding Hub}" />
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding SelectedView}" Value="Mirror">
+                                    <Setter Property="Content">
+                                        <Setter.Value>
+                                            <views:MirrorView DataContext="{Binding Mirror}" />
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding SelectedView}" Value="AirPlay">
+                                    <Setter Property="Content">
+                                        <Setter.Value>
+                                            <views:AirPlayView DataContext="{Binding AirPlay}" />
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding SelectedView}" Value="Settings">
+                                    <Setter Property="Content">
+                                        <Setter.Value>
+                                            <views:SettingsView />
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding SelectedView}" Value="WirelessHost">
+                                    <Setter Property="Content">
+                                        <Setter.Value>
+                                            <views:WirelessHostView />
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding SelectedView}" Value="About">
+                                    <Setter Property="Content">
+                                        <Setter.Value>
+                                            <views:AboutView />
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ContentControl.Style>
+                </ContentControl>
+            </Grid>
+        </Grid>
+        <Rectangle Grid.Row="2" Fill="{DynamicResource Gold5Brush}" />
+
+        <!-- ============================================================ -->
+        <!-- Row 3 - Chronicle log strip                                    -->
+        <!-- ============================================================ -->
+        <Grid Grid.Row="3"
+              Background="{DynamicResource LogBackgroundBrush}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- Log header -->
+            <Grid Grid.Row="0" Margin="20,12,20,6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <Ellipse Width="8" Height="8"
+                             VerticalAlignment="Center"
+                             Margin="0,0,6,0">
+                        <Ellipse.Fill>
+                            <RadialGradientBrush Center="0.3,0.3" RadiusX="0.7" RadiusY="0.7">
+                                <GradientStop Offset="0"   Color="#8FDF50" />
+                                <GradientStop Offset="0.6" Color="{DynamicResource SuccessColor}" />
+                                <GradientStop Offset="1"   Color="{DynamicResource SuccessDarkColor}" />
+                            </RadialGradientBrush>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                    <TextBlock Text="&#x2756;"
+                               Foreground="{DynamicResource Gold4Brush}"
+                               FontSize="11"
+                               VerticalAlignment="Center"
+                               Margin="0,0,8,0" />
+                    <TextBlock Text="{x:Static res:Strings.LogStripLiveLogLabel}"
+                               FontFamily="{DynamicResource FontDisplay}"
+                               FontWeight="Bold"
+                               FontSize="11"
+                               Foreground="{DynamicResource Gold3Brush}"
+                               VerticalAlignment="Center" />
+                    <TextBlock Text="  &#xB7;  "
+                               FontSize="11"
+                               Foreground="{DynamicResource ForegroundDisabledBrush}"
+                               VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding StatusMessage}"
+                               FontFamily="{DynamicResource FontFantasy}"
+                               FontStyle="Italic"
+                               FontSize="11"
+                               Foreground="{DynamicResource ForegroundMutedBrush}"
+                               VerticalAlignment="Center" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Content="Clear"
+                            FontFamily="{DynamicResource FontDisplay}"
+                            FontWeight="Bold"
+                            FontSize="10"
+                            Padding="8,3"
+                            Margin="2,0"
+                            BorderBrush="{DynamicResource Gold5Brush}"
+                            Background="{DynamicResource SurfaceElevatedBrush}"
+                            Foreground="{DynamicResource ForegroundSecondaryBrush}" />
+                    <Button Content="Copy"
+                            FontFamily="{DynamicResource FontDisplay}"
+                            FontWeight="Bold"
+                            FontSize="10"
+                            Padding="8,3"
+                            Margin="2,0"
+                            BorderBrush="{DynamicResource Gold5Brush}"
+                            Background="{DynamicResource SurfaceElevatedBrush}"
+                            Foreground="{DynamicResource ForegroundSecondaryBrush}" />
+                    <Button Content="Filter"
+                            FontFamily="{DynamicResource FontDisplay}"
+                            FontWeight="Bold"
+                            FontSize="10"
+                            Padding="8,3"
+                            Margin="2,0"
+                            BorderBrush="{DynamicResource Gold5Brush}"
+                            Background="{DynamicResource SurfaceElevatedBrush}"
+                            Foreground="{DynamicResource ForegroundSecondaryBrush}" />
+                </StackPanel>
+            </Grid>
+
+            <!-- Log list -->
+            <ListBox Grid.Row="1"
+                     ItemsSource="{Binding LogLines}"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     Margin="20,0,20,12"
+                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     VirtualizingPanel.IsVirtualizing="True"
+                     VirtualizingPanel.VirtualizationMode="Recycling"
+                     VirtualizingPanel.ScrollUnit="Item"
+                     FontFamily="Cascadia Mono, Consolas">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Padding" Value="0,1" />
+                        <Setter Property="Background" Value="Transparent" />
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type vm:LogLineViewModel}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="76" />
+                                <ColumnDefinition Width="68" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="{Binding TimestampText}"
+                                       FontFamily="Cascadia Mono, Consolas"
+                                       FontSize="12"
+                                       Foreground="{DynamicResource LogTimestampBrush}" />
+                            <Border Grid.Column="1"
+                                    Margin="0,0,8,0"
+                                    Background="#1A2A48"
+                                    BorderBrush="#2A528A"
+                                    BorderThickness="1"
+                                    CornerRadius="2"
+                                    Padding="6,0">
+                                <TextBlock Text="{Binding LevelText}"
+                                           FontFamily="{DynamicResource FontDisplay}"
+                                           FontWeight="Bold"
+                                           FontSize="10"
+                                           HorizontalAlignment="Center"
+                                           Foreground="{DynamicResource LogInfoBrush}" />
+                            </Border>
+                            <TextBlock Grid.Column="2"
+                                       Text="{Binding Message}"
+                                       FontFamily="Cascadia Mono, Consolas"
+                                       FontSize="12"
+                                       Foreground="{DynamicResource LogForegroundBrush}"
+                                       TextWrapping="NoWrap" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+    </Grid>
+</Window>

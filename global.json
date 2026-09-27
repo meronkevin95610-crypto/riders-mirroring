@@ -1,0 +1,8 @@
+{
+  "sdk": {
+    "version": "8.0.100",
+    "rollForward": "latestMajor",
+    "allowPrerelease": true,
+    "comment": "We pin the floor at .NET 8 LTS but allow newer SDKs (incl. previews) so the build works on dev machines that only have the latest preview installed. Each csproj still targets net8.0[-windows] explicitly."
+  }
+}

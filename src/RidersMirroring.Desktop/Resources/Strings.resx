@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <!-- Application identity -->
+  <data name="AppTitle"><value>Riders Mirroring</value><comment>Window title shown in the taskbar.</comment></data>
+
+  <!-- Sidebar (MainWindow) -->
+  <data name="SidebarDevicesHeader"><value>DEVICES</value><comment>Sidebar section header above the device list.</comment></data>
+  <data name="LogStripLiveLogLabel"><value>LIVE LOG</value><comment>Header shown at the top of the live log strip.</comment></data>
+
+  <!-- AirPlay view -->
+  <data name="AirPlayTitle"><value>AirPlay Receiver</value><comment>AirPlay view header.</comment></data>
+  <data name="AirPlayDescription"><value>Start the local AirPlay server so an iPhone or iPad can mirror its screen to this PC. UxPlay is used as the backend â€” it is started as a separate process and parsed for connection events.</value></data>
+  <data name="AirPlayReceiverStatus"><value>Receiver status</value></data>
+  <data name="AirPlayConnectedDevices"><value>Connected devices</value></data>
+  <data name="AirPlayStartButton"><value>Start</value></data>
+  <data name="AirPlayStopButton"><value>Stop</value></data>
+
+  <!-- Mirror view -->
+  <data name="MirrorEmptyTitle"><value>📱 No device selected</value></data>
+  <data name="MirrorEmptyDescription"><value>Plug your Android smartphone in via USB with USB debugging enabled, or pair it over Wi-Fi. Then pick the device from the sidebar to start mirroring.</value></data>
+  <data name="MirrorEmptyTipHeader"><value>💡 Quick connection tip:</value></data>
+  <data name="MirrorEmptyTipBody"><value>Open Settings &gt; Developer options &gt; enable USB debugging. For Wi-Fi, use the 'Wireless' tab below to scan the QR code.</value></data>
+  <data name="MirrorSerialLabel"><value>Serial number:</value></data>
+  <data name="MirrorStatusLabel"><value>• Status:</value></data>
+  <data name="MirrorRunningBadge"><value>RUNNING</value></data>
+  <data name="MirrorReadyBadge"><value>READY</value></data>
+  <data name="MirrorLatencyBadge"><value>Fullscreen or windowed streaming with ultra-low latency (30-60 ms)</value></data>
+  <data name="MirrorStartButton"><value>â–¶ START MIRRORING</value></data>
+  <data name="MirrorStopButton"><value>â–  STOP MIRRORING</value></data>
+  <data name="MirrorWaitingForVideo"><value>Waiting for video streamâ€¦</value></data>
+  <data name="MirrorSectionStreamingOptions"><value>Streaming &amp; display options</value></data>
+  <data name="MirrorSectionStreamingOptionsHint"><value>Tweak these settings before you start the session.</value></data>
+  <data name="MirrorOptionKeepAwake"><value>Keep the phone screen on</value></data>
+  <data name="MirrorOptionTurnScreenOff"><value>Turn the phone screen off (saves battery)</value></data>
+  <data name="MirrorOptionAlwaysOnTop"><value>Always keep window on top</value></data>
+  <data name="MirrorOptionFullscreen"><value>Start in fullscreen mode</value></data>
+  <data name="MirrorOptionAudio"><value>Forward phone audio (Android 10+)</value></data>
+  <data name="MirrorOptionShowTouches"><value>Show on-screen touches</value></data>
+  <data name="MirrorOptionFpsLabel"><value>Frames per second (FPS):</value></data>
+  <data name="MirrorOptionBitrateLabel"><value>Video bitrate (Mbps):</value></data>
+  <data name="MirrorOptionResolutionLabel"><value>Max resolution (px):</value></data>
+  <data name="MirrorSectionRemote"><value>Remote control &amp; quick actions</value></data>
+  <data name="MirrorSectionRemoteHint"><value>Drive your device straight from the app.</value></data>
+  <data name="MirrorSessionInfo"><value>Session info</value></data>
+
+  <!-- Wireless Host view -->
+  <data name="WirelessHostTitle"><value>Wireless Host</value></data>
+  <data name="WirelessHostDescription"><value>Pair an Android device over Wi-Fi without USB. Scan the QR code with your phone to join the network, then connect to the address shown below.</value></data>
+  <data name="WirelessHostWifiNetwork"><value>Wi-Fi network</value></data>
+  <data name="WirelessHostWifiNetworkHint"><value>Enter the credentials of the Wi-Fi network your phone should join. Riders Mirroring itself stays on your current network.</value></data>
+  <data name="WirelessHostSsidLabel"><value>SSID</value></data>
+  <data name="WirelessHostPasswordLabel"><value>Password</value></data>
+  <data name="WirelessHostOpenNetworksWarning"><value>WPA networks only â€” open networks are not supported yet.</value></data>
+  <data name="WirelessHostGenerateButton"><value>Generate QR code</value></data>
+  <data name="WirelessHostStatusLabel"><value>Status</value></data>
+
+  <!-- Settings view -->
+  <data name="SettingsTitle"><value>Settings</value></data>
+  <data name="SettingsDescription"><value>Personalise the look and feel of Riders Mirroring.</value></data>
+  <data name="SettingsThemeHeader"><value>Theme</value></data>
+  <data name="SettingsThemeHint"><value>Dark is easier on the eyes at night. Light works better in bright rooms.</value></data>
+  <data name="SettingsAccentColour"><value>Accent colour</value></data>
+
+  <!-- About view -->
+  <data name="AboutThirdPartyComponents"><value>Third-party components redistributed</value></data>
+  <data name="AboutThirdPartyHint"><value>This application redistributes the following open-source components. Full licence texts are bundled in the licences/ folder.</value></data>
+  <data name="AboutColumnComponent"><value>COMPONENT</value></data>
+  <data name="AboutColumnLicence"><value>LICENCE</value></data>
+  <data name="AboutColumnUsage"><value>USAGE</value></data>
+  <data name="AboutGplNote"><value>âš ï¸ GPLv3 note: UxPlay runs as a separate process â€” the combination is treated as aggregation, not a derivative work. UxPlay's source and full licence are shipped alongside this binary.</value></data>
+  <data name="AboutBuildInfo"><value>Build information</value></data>
+  <data name="AboutOpenRepo"><value>🔗 Open GitHub repository</value></data>
+  <data name="AboutLicencesButton"><value>ðŸ“„ Licences</value></data>
+  <data name="NavSectionLabel"><value>NAVIGATION</value><comment>Label rendered above the bottom sidebar nav rail. Decorative ornament surrounds it.</comment></data>
+</root>

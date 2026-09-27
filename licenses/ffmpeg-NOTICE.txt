@@ -1,0 +1,29 @@
+FFmpeg is licensed under the LGPL 2.1+ License (for shared-library builds).
+
+Copyright (c) 2000-2024 the FFmpeg developers
+
+This product includes software developed by the FFmpeg project
+(https://www.ffmpeg.org/).
+
+FFmpeg is free software; you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License as published by the
+Free Software Foundation; either version 2.1 of the License, or
+(at your option) any later version.
+
+FFmpeg is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with FFmpeg; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+Full source: https://www.ffmpeg.org/download.html
+Full license: https://www.ffmpeg.org/legal.html
+
+Riders Mirroring optionally uses FFmpeg shared DLLs (avcodec, avformat,
+avutil, swscale, swresample) to decode the H.264 stream produced by the
+scrcpy server. We link dynamically so end users may swap the DLLs for a
+different FFmpeg version without recompiling Riders Mirroring — this
+preserves LGPL compliance.

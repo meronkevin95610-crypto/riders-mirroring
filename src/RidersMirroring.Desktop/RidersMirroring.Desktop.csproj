@@ -1,0 +1,98 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Disable the implicit EmbeddedResource glob so we can set a
+         ManifestResourceName on each .resx individually (the SDK default
+         packs everything into <AssemblyName>.g.resources which the
+         ResourceManager constructor cannot locate by name). -->
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <!-- Same trick for the WPF Resource glob: implicit WPF globs the
+         whole Resources/ folder into RidersMirroring.Desktop.g.resources,
+         which prevents `pack://application:,,,/Resources/Branding/riders-mirroring-logo.png`
+         from resolving to a standalone manifest. -->
+    <EnableDefaultApplicationDefinitionItems>false</EnableDefaultApplicationDefinitionItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RidersMirroring.Core\RidersMirroring.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- i18n: Strings.resx (invariant) + Strings.fr.resx (French). The
+         SDK 10 implicit EmbeddedResource glob merges everything into a
+         single RidersMirroring.Desktop.g.resources manifest, which
+         ResourceManager cannot locate by name. We therefore disable
+         the implicit glob and list each .resx explicitly with
+         ManifestResourceName so the .resx→.resources conversion step
+         produces manifests named exactly what the ResourceManager in
+         Strings.Designer.cs queries. MSBuild auto-appends ".resources"
+         to ManifestResourceName, so we omit it here. -->
+    <EmbeddedResource Include="Resources\Strings.resx">
+      <ManifestResourceName>Riders.Mirroring.Desktop.Resources.Strings</ManifestResourceName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Strings.fr.resx">
+      <ManifestResourceName>Riders.Mirroring.Desktop.Resources.Strings.fr</ManifestResourceName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Bundled Riders Mirroring branding. Listed with explicit
+         LogicalName so they end up as standalone WPF Resource manifests
+         rather than getting packed into the SDK's *.g.resources blob.
+         That way `pack://application:,,,/RidersMirroring.Desktop;component/Resources/Branding/riders-mirroring-logo.png`
+         resolves correctly at runtime, and the test suite can validate
+         the asset by enumerating GetManifestResourceNames(). -->
+    <Resource Include="Resources\Branding\riders-mirroring-logo.png">
+      <LogicalName>Resources.Branding.riders-mirroring-logo.png</LogicalName>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Dofus Touch fonts: Cinzel (display), Cinzel Decorative (titles),
+         Almendra (parchment body). Bundled as WPF Resource with explicit
+         LogicalName so XAML can resolve them via pack:// URI
+         (e.g. FontFamily="pack://application:,,,/Resources/Fonts/#Cinzel Decorative").
+         SIL Open Font License 1.1 — see the OFL.txt files alongside. -->
+    <Resource Include="Resources\Fonts\Cinzel-Variable.ttf">
+      <LogicalName>Resources.Fonts.Cinzel-Variable.ttf</LogicalName>
+    </Resource>
+    <Resource Include="Resources\Fonts\CinzelDecorative-Bold.ttf">
+      <LogicalName>Resources.Fonts.CinzelDecorative-Bold.ttf</LogicalName>
+    </Resource>
+    <Resource Include="Resources\Fonts\CinzelDecorative-Black.ttf">
+      <LogicalName>Resources.Fonts.CinzelDecorative-Black.ttf</LogicalName>
+    </Resource>
+    <Resource Include="Resources\Fonts\Almendra-Regular.ttf">
+      <LogicalName>Resources.Fonts.Almendra-Regular.ttf</LogicalName>
+    </Resource>
+    <Resource Include="Resources\Fonts\Almendra-Bold.ttf">
+      <LogicalName>Resources.Fonts.Almendra-Bold.ttf</LogicalName>
+    </Resource>
+    <Resource Include="Resources\Fonts\Almendra-Italic.ttf">
+      <LogicalName>Resources.Fonts.Almendra-Italic.ttf</LogicalName>
+    </Resource>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>Resources\App.ico</ApplicationIcon>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <Deterministic>true</Deterministic>
+    <!-- Lock the app to 1600x900 @ 160 DPI: ignore the system DPI scaling. -->
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <NoWarn>$(NoWarn);CA1416</NoWarn>
+  </PropertyGroup>
+
+</Project>

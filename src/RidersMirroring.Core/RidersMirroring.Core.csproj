@@ -1,0 +1,57 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!--
+      FFmpeg.AutoGen's P/Invoke signatures and ScrcpyVideoDecoder (which
+      holds raw pointers to AVFrame/AVPacket/AVCodecContext/SwsContext)
+      require `unsafe` blocks. We allow them only at the library level —
+      consumers in RidersMirroring.Desktop still keep the default
+      constraint and cannot inadvertently introduce raw pointers.
+    -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <!-- SourceLink for debuggable NuGet symbols. Requires git for source indexing. -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="RidersMirroring.Core.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AdvancedSharpAdbClient" Version="3.0.9" />
+    <!--
+      FFmpeg.AutoGen 8.1.0 ships P/Invoke bindings for FFmpeg 8.1. We pin
+      to 8.1.0 because the redistributed FFmpeg DLLs (vendor/ffmpeg/bin/)
+      are built from FFmpeg 8.1 — see vendor/ffmpeg/.known-good. The DLL
+      major versions MUST match what FFmpeg.AutoGen.LibraryVersionMap
+      expects (avcodec-63, avutil-61, swscale-10 for FFmpeg 8.1); a
+      mismatch causes a silent NotSupportedException at first frame.
+    -->
+    <PackageReference Include="FFmpeg.AutoGen" Version="8.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
+    <PackageReference Include="NAudio" Version="2.2.1" />
+    <PackageReference Include="QRCoder" Version="1.6.0" />
+    <PackageReference Include="Serilog" Version="4.0.2" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!--
+    Vendored FFmpeg LGPL-2.1 DLLs, copied next to the binary at build/publish
+    time. The script tools/fetch-vendor-ffmpeg.ps1 maintains vendor/ffmpeg/bin/.
+    We only ship the LGPL-shared runtime DLLs we actually call into (avcodec,
+    avformat, avutil, swscale, swresample, avfilter). The license text lives in
+    vendor/ffmpeg/LICENSE and licenses/ffmpeg-NOTICE.txt.
+  -->
+  <ItemGroup>
+    <None Include="..\..\vendor\ffmpeg\bin\*.dll" Link="vendor\ffmpeg\bin\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

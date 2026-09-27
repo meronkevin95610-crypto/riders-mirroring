@@ -1,0 +1,14 @@
+{
+  "name": "riders-mirroring-host-tests-runner",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "In-memory runner for the H1/H2/H3 token-TTL tests of riders-mirroring-host. Mirrors the production logic in ws-server.mjs so we can validate without booting Electron.",
+  "main": "run-tests.mjs",
+  "scripts": {
+    "test": "node run-tests.mjs"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}

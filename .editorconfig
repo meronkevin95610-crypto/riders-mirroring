@@ -1,0 +1,99 @@
+root = true
+
+# ---------------------------------------------------------------------------
+# C# style — matches the conventions required by the project brief:
+#   - "new line before open brace" (csharp_new_line_before_open_brace = all)
+#   - file-scoped namespaces
+#   - var preferences for built-in numeric types
+# ---------------------------------------------------------------------------
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+[*.{xml,xaml,csproj,props,targets,sln,slnx}]
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false
+
+# ---------------------------------------------------------------------------
+# C# files
+# ---------------------------------------------------------------------------
+
+[*.cs]
+indent_style = space
+indent_size = 4
+
+# New line before every opening brace (matches rider / VS default "all").
+csharp_new_line_before_open_brace = all
+
+# Prefer "var" for built-in numeric types when the right-hand side is clear.
+csharp_style_var_for_built_in_types = true:suggestion
+
+# Prefer expression-bodied members only where they clearly improve readability.
+csharp_style_expression_bodied_methods = when_on_single_line:suggestion
+csharp_style_expression_bodied_properties = true:suggestion
+csharp_style_expression_bodied_accessors = true:suggestion
+csharp_style_expression_bodied_lambdas = true:suggestion
+csharp_style_expression_bodied_local_functions = when_on_single_line:suggestion
+
+# Pattern matching / null checks.
+csharp_style_pattern_matching_over_is_with_cast_check = true:warning
+csharp_style_pattern_matching_over_as_with_null_check = true:warning
+csharp_style_throw_expression = true:suggestion
+csharp_style_conditional_delegate_call = true:suggestion
+
+# Namespace & using declarations.
+csharp_style_namespace_declarations = file_scoped:warning
+
+# Place "using System;" first, then other System usings, then others.
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = false
+
+# Run "dotnet format" before commit (enforced via pre-commit hook later).
+dotnet_diagnostic.IDE0058.severity = none
+dotnet_diagnostic.CA1416.severity = none
+
+# ---------------------------------------------------------------------------
+# Quality analyzers (Microsoft.CodeAnalysis.NetAnalyzers / .NET 8 SDK)
+# ---------------------------------------------------------------------------
+
+# CA1062: validate arguments of public methods — turn into a warning so the
+# next "ArgumentNullException.ThrowIfNull" addition is flagged in code review.
+dotnet_diagnostic.CA1062.severity = warning
+
+# CA1822: mark members as static — surfaced as suggestion only to avoid noise.
+dotnet_diagnostic.CA1822.severity = suggestion
+
+# CA1848: prefer LoggerMessage source-generated overloads.
+# (We don't yet use source-gen loggers everywhere; suggestion rather than warning.)
+dotnet_diagnostic.CA1848.severity = suggestion
+
+# CA2007: ConfigureAwait — suggestion in code, not warning, because some
+# helpers (UI marshalling) legitimately need the dispatcher context.
+dotnet_diagnostic.CA2007.severity = suggestion
+
+# CA1812: uninstantiated internal classes — used to flag test helpers that
+# are never instantiated by their own assembly.
+dotnet_diagnostic.CA1812.severity = suggestion
+
+# CA1051: visible instance fields — already covered by stylecop SA1401 in
+# practice, but keep the diagnostic at warning level for new code.
+dotnet_diagnostic.CA1051.severity = warning
+
+# ---------------------------------------------------------------------------
+# XML / XAML
+# ---------------------------------------------------------------------------
+
+[*.{xml,xaml}]
+indent_style = space
+indent_size = 2
+
+[*.xaml]
+# Allow longer lines in XAML (markup attributes can be wide).
+max_line_length = 200

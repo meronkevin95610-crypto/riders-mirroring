@@ -1,0 +1,29 @@
+﻿<Application x:Class="Riders.Mirroring.Desktop.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:conv="clr-namespace:Riders.Mirroring.Desktop.Converters"
+             ShutdownMode="OnMainWindowClose">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--
+                  The active theme (Dark or Light) is added at runtime by
+                  ThemeService.ApplyTo() in OnStartup. We pre-register
+                  converters here so they're available app-wide.
+                -->
+            </ResourceDictionary.MergedDictionaries>
+
+            <conv:BooleanToVisibilityConverter    x:Key="BoolToVisibility" />
+            <conv:NullOrEmptyToVisibilityConverter x:Key="NullOrEmptyToVisibility" />
+            <conv:NullToVisibilityConverter         x:Key="NullToVisibility" />
+            <conv:InverseBooleanConverter          x:Key="InverseBool" />
+            <conv:StringToVisibilityConverter      x:Key="StringToVisibility" />
+            <conv:FileExistsToVisibilityConverter   x:Key="FileExistsToVisibility" />
+            <conv:AppViewLabelConverter            x:Key="AppViewLabelConverter" />
+            <conv:AppViewIconConverter             x:Key="AppViewIconConverter" />
+            <conv:AppViewToBoolConverter           x:Key="AppViewToBoolConverter" />
+            <conv:AppViewShortcutConverter         x:Key="AppViewShortcutConverter" />
+            <conv:AppViewMatchConverter            x:Key="AppViewMatchConverter" />
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

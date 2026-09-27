@@ -1,0 +1,116 @@
+PROJET : "riders-mirroring"
+Application de mirroring d'écran cross-platform, démarrage from scratch.
+
+OBJECTIF GLOBAL
+Créer un système complet permettant de refléter l'écran d'un smartphone 
+(Android ET iOS) vers un laptop Windows, en temps réel, via WiFi local, 
+avec pairing par QR code, et support multi-device simultané (plusieurs 
+téléphones connectés en même temps, Android et iOS mélangés, sans aucun 
+conflit entre les flux).
+
+ARCHITECTURE CIBLE (3 composants séparés)
+
+1. HOST (Windows) — "riders-mirroring-host"
+   - Stack : Electron + Node.js + TypeScript
+   - Rôles :
+     a) Serveur de signaling WebSocket (négociation WebRTC)
+     b) Service de découverte réseau mDNS (bonjour-service)
+     c) Génération de QR code de pairing (lib `qrcode`)
+     d) UI d'affichage : une zone/fenêtre par device connecté
+     e) Gestion multi-session isolée (aucun état partagé entre devices)
+
+2. CLIENT ANDROID — "riders-mirroring-android"
+   - Stack : Kotlin, Jetpack Compose pour l'UI de pairing
+   - Rôles :
+     a) Scanner de QR code (CameraX + ML Kit Barcode Scanning)
+     b) Capture d'écran : MediaProjection API
+     c) Encodage vidéo : MediaCodec (H.264 hardware, low-latency)
+     d) Connexion WebRTC vers le host (lib officielle 
+        `org.webrtc:google-webrtc`)
+
+3. CLIENT iOS — "riders-mirroring-ios"
+   - Stack : Swift, SwiftUI
+   - Rôles :
+     a) Scanner de QR code (AVFoundation)
+     b) Capture d'écran : ReplayKit (RPScreenRecorder / Broadcast Extension 
+        si on veut capturer même en arrière-plan)
+     c) Encodage vidéo : VideoToolbox
+     d) Connexion WebRTC vers le host (lib `WebRTC` via CocoaPods/SPM)
+
+FLUX DE PAIRING (détaillé)
+1. Le host démarre : lance le serveur WebSocket sur un port libre + le 
+   service mDNS (annonce `_ridersmirror._tcp.local`)
+2. Le host génère un session_token (UUID v4) + une clé de chiffrement 
+   éphémère, encode {ip_locale, port, session_token, clé} dans un QR code 
+   affiché à l'écran
+3. Le mobile (Android ou iOS) scanne le QR → extrait les infos → ouvre 
+   une connexion WebSocket directe vers le host avec le session_token
+4. Négociation WebRTC : échange SDP offer/answer + ICE candidates via 
+   le WebSocket (signaling), établissement de la PeerConnection
+5. Une fois connecté, le flux vidéo (écran du mobile) est streamé en 
+   direct au host via WebRTC, affiché dans une fenêtre/zone dédiée
+
+GESTION MULTI-DEVICE (point critique)
+- Le host maintient une structure : 
+  Map<session_token, { peerConnection, deviceType: 'android'|'ios', 
+  displayZone, connectedAt }>
+- Chaque nouvelle connexion = nouveau session_token = nouvelle 
+  PeerConnection totalement indépendante
+- Le serveur WebSocket route chaque message signaling par session_token 
+  (jamais de broadcast global)
+- L'UI host affiche dynamiquement une nouvelle zone à chaque connexion, 
+  la retire proprement à la déconnexion
+- Aucune ressource partagée entre les sessions (pas de variable globale 
+  mutable commune, pas de singleton pour l'état de connexion)
+
+EXIGENCES DE FIABILITÉ
+- Reconnexion automatique en cas de coupure WiFi (backoff exponentiel, 
+  session_token valide 5 min après déconnexion pour permettre la reprise)
+- Gestion propre des permissions runtime (MediaProjection Android, 
+  autorisation caméra pour le scan QR sur les deux plateformes)
+- Indicateurs de qualité affichés côté host : latence, FPS, packet loss
+- Logs timestampés à chaque étape (capture, encodage, envoi réseau, 
+  réception, décodage, affichage) pour permettre le debug de latence
+
+PRIORITÉS DE DÉVELOPPEMENT (dans l'ordre)
+Phase 1 — Fondations host
+  - Setup projet Electron + TypeScript
+  - Serveur WebSocket basique (accepte connexions, log les messages)
+  - Génération et affichage du QR code (données statiques pour tester)
+
+Phase 2 — Premier client (choisir Android ou iOS)
+  - Setup projet natif
+  - Scan QR fonctionnel → extraction des données de connexion
+  - Connexion WebSocket vers le host (juste un "hello" pour valider le lien)
+
+Phase 3 — WebRTC end-to-end (1 seul device)
+  - Capture d'écran + encodage côté mobile
+  - Signaling complet (SDP/ICE) via le WebSocket
+  - Affichage du flux vidéo côté host
+  - Mesure de la latence réelle
+
+Phase 4 — Deuxième plateforme
+  - Répliquer la Phase 2 et 3 pour l'autre OS (Android si tu as fait iOS, 
+    ou inversement)
+
+Phase 5 — Multi-device
+  - Implémenter la Map de sessions isolées côté host
+  - UI multi-zones
+  - Tests de connexions simultanées (2, 3+ devices, mix Android/iOS)
+
+Phase 6 — Fiabilité & polish
+  - Reconnexion automatique
+  - Indicateurs de qualité
+  - Gestion des edge cases (device qui ferme l'app brutalement, réseau 
+    qui coupe, etc.)
+
+DEMANDE POUR CETTE SESSION
+On démarre la Phase 1. Aide-moi à :
+1. Initialiser le projet Electron + TypeScript (structure de dossiers, 
+   package.json, configuration de base)
+2. Créer le serveur WebSocket minimal
+3. Créer le module de génération de QR code avec des données de test
+
+Guide-moi commande par commande, explique chaque choix de dépendance, 
+et signale-moi si une étape nécessite une décision de ma part avant de 
+continuer.

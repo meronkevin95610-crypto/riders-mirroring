@@ -1,0 +1,40 @@
+<Project Sdk="WixToolset.Sdk/4.0.5">
+
+  <!--
+    WiX 4 SDK project. Produces a single .msi that installs the published
+    Riders Mirroring WPF app into %ProgramFiles%\Riders Mirroring.
+
+    The publish step is run by CI before this build and lands its output in
+    `publish\win-x64\` (next to this .wixproj). We run Harvest.ps1 to
+    auto-generate `obj\HarvestedFiles.wxs` with one Component per file
+    (replaces WiX 3 `heat dir`, which was removed in WiX 4).
+  -->
+
+  <PropertyGroup>
+    <OutputName>RidersMirroring-$(Version)</OutputName>
+    <OutputType>Package</OutputType>
+    <Platforms>x64</Platforms>
+    <ProductCode>$(ProductCode)</ProductCode>
+    <UpgradeCode Condition="'$(UpgradeCode)' == ''">B5E3C561-2A1B-4E3E-8DF3-1F44E72B9611</UpgradeCode>
+    <HarvestSourcesPath>$(MSBuildThisFileDirectory)publish\win-x64</HarvestSourcesPath>
+    <DefineConstants>Version=$(Version);UpgradeCode=$(UpgradeCode)</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WixToolset.UI.wixext" Version="4.0.5" />
+  </ItemGroup>
+
+  <Target Name="HarvestPublishDir"
+          BeforeTargets="BeforeCompile"
+          Condition="Exists('$(HarvestSourcesPath)')">
+
+    <Message Text="Harvesting $(HarvestSourcesPath) into obj\HarvestedFiles.wxs" Importance="high" />
+
+    <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)Harvest.ps1&quot; -PublishDir &quot;$(HarvestSourcesPath)&quot; -OutputFile &quot;$(MSBuildThisFileDirectory)obj\HarvestedFiles.wxs&quot;" />
+
+    <ItemGroup>
+      <Compile Include="obj\HarvestedFiles.wxs" />
+    </ItemGroup>
+  </Target>
+
+</Project>
