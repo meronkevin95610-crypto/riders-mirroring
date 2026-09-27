@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Aperçu du hub Riders Mirroring">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#221d33"/>
+      <stop offset="1" stop-color="#1a1626"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3b3263"/>
+      <stop offset="1" stop-color="#221d33"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Window chrome -->
+  <rect width="800" height="500" rx="10" fill="url(#bg)"/>
+  <rect x="1" y="1" width="798" height="498" rx="9" fill="none" stroke="#4a4068" stroke-width="1"/>
+
+  <!-- Title bar -->
+  <rect x="0" y="0" width="800" height="34" fill="#2a2540"/>
+  <circle cx="18" cy="17" r="5" fill="#ff6b5b"/>
+  <circle cx="36" cy="17" r="5" fill="#ffce60"/>
+  <circle cx="54" cy="17" r="5" fill="#8fdf50"/>
+  <text x="400" y="22" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#b3a98e">Riders Mirroring</text>
+
+  <!-- Tabs -->
+  <rect x="0" y="34" width="800" height="40" fill="#1a1626"/>
+  <rect x="12" y="38" width="120" height="32" rx="4" fill="#342d52" stroke="#d4af37" stroke-width="1"/>
+  <text x="72" y="58" text-anchor="middle" font-family="Segoe UI" font-size="11" fill="#fff4c1">📱 Pixel 7</text>
+  <rect x="140" y="38" width="120" height="32" rx="4" fill="#2a2540" stroke="#4a4068"/>
+  <text x="200" y="58" text-anchor="middle" font-family="Segoe UI" font-size="11" fill="#b3a98e">📱 Galaxy S23</text>
+  <rect x="268" y="38" width="120" height="32" rx="4" fill="#2a2540" stroke="#4a4068"/>
+  <text x="328" y="58" text-anchor="middle" font-family="Segoe UI" font-size="11" fill="#b3a98e">📱 iPhone 15</text>
+
+  <!-- Phone frame in center -->
+  <rect x="240" y="100" width="320" height="370" rx="22" fill="#0d0a16" stroke="#4a4068" stroke-width="2"/>
+  <rect x="252" y="120" width="296" height="340" rx="6" fill="url(#screen)"/>
+  <!-- Notch -->
+  <rect x="370" y="100" width="60" height="14" rx="7" fill="#0d0a16"/>
+
+  <!-- Home screen content (mock) -->
+  <g font-family="Segoe UI" fill="#f0ecdc" text-anchor="middle">
+    <text x="400" y="170" font-size="14" opacity="0.7">09:42</text>
+    <text x="400" y="220" font-size="22" font-weight="600">Lundi 27 Sept.</text>
+    <text x="400" y="245" font-size="11" opacity="0.6">Démo · Riders Mirroring</text>
+
+    <!-- App grid -->
+    <g transform="translate(280 280)">
+      <rect x="0"   y="0" width="48" height="48" rx="10" fill="#5e54b0"/>
+      <rect x="60"  y="0" width="48" height="48" rx="10" fill="#4a4068"/>
+      <rect x="120" y="0" width="48" height="48" rx="10" fill="#d4af37"/>
+      <rect x="180" y="0" width="48" height="48" rx="10" fill="#4a8a20"/>
+      <rect x="0"   y="60" width="48" height="48" rx="10" fill="#ff6b5b"/>
+      <rect x="60"  y="60" width="48" height="48" rx="10" fill="#ffce60"/>
+      <rect x="120" y="60" width="48" height="48" rx="10" fill="#221d33" stroke="#4a4068"/>
+      <rect x="180" y="60" width="48" height="48" rx="10" fill="#342d52"/>
+    </g>
+  </g>
+
+  <!-- FPS badge -->
+  <g transform="translate(560 100)">
+    <rect width="100" height="26" rx="13" fill="#2a2540" stroke="#8fdf50" stroke-width="1"/>
+    <circle cx="14" cy="13" r="4" fill="#8fdf50"/>
+    <text x="58" y="17" text-anchor="middle" font-family="Segoe UI" font-size="11" fill="#8fdf50" font-weight="600">60 FPS</text>
+  </g>
+
+  <!-- Status bar bottom -->
+  <rect x="0" y="478" width="800" height="22" fill="#2a2540"/>
+  <text x="14" y="493" font-family="Segoe UI" font-size="10" fill="#b3a98e">3 appareils · ADB OK · H.264 in-app</text>
+  <text x="786" y="493" text-anchor="end" font-family="Segoe UI" font-size="10" fill="#d4af37">v1.0.0</text>
+</svg>
