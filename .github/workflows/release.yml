@@ -1,53 +1,28 @@
 name: Release
 
-# Déclenché manuellement OU automatiquement quand on push un tag `v*`.
-# - Construit le MSI Release en win-x64.
-# - Publie le MSI sur GitHub Releases avec un changelog auto-généré.
-
 on:
   push:
     tags:
       - 'v*'
   workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Tag version (ex: v1.0.0). Vide = auto depuis le tag du run.'
-        required: false
-        default: ''
 
 env:
   DOTNET_VERSION: "8.0.x"
   CONFIGURATION: Release
-
-permissions:
-  contents: write
 
 jobs:
   release:
     name: Build MSI + publish GitHub Release
     runs-on: windows-latest
 
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Resolve version
-        id: version
-        shell: pwsh
-        run: |
-          $tag = "${{ github.ref_type }}" -eq 'tag' `
-              ? "${{ github.ref_name }}" `
-              : "${{ inputs.tag }}"
-          if (-not $tag) {
-            Write-Host "::error::No tag supplied. Push a v* tag or pass inputs.tag."
-            exit 1
-          }
-          $version = $tag.TrimStart('v')
-          Write-Host "Resolved version: $version"
-          "VERSION=$version" >> $env:GITHUB_ENV
-          "TAG=$tag" >> $env:GITHUB_ENV
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -62,59 +37,82 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      - name: Restore
-        # Build only src/ + tests/ + installer/. tools/ hosts dev utilities
-        # that need different toolchain config — excluded from CI/release.
-        run: |
-          dotnet restore src/RidersMirroring.Core/RidersMirroring.Core.csproj
-          dotnet restore src/RidersMirroring.Desktop/RidersMirroring.Desktop.csproj
-          dotnet restore tests/RidersMirroring.Core.Tests/RidersMirroring.Core.Tests.csproj
-          dotnet restore tests/RidersMirroring.Desktop.Tests/RidersMirroring.Desktop.Tests.csproj
-          dotnet restore installer/RidersMirroring.Installer/RidersMirroring.Installer.wixproj
+      - name: Restore Core
+        run: dotnet restore src/RidersMirroring.Core/RidersMirroring.Core.csproj
 
-      - name: Build (Core)
-        run: dotnet build src/RidersMirroring.Core/RidersMirroring.Core.csproj -c ${{ env.CONFIGURATION }} --no-restore /p:UseSharedCompilation=false
+      - name: Restore Desktop
+        run: dotnet restore src/RidersMirroring.Desktop/RidersMirroring.Desktop.csproj
 
-      - name: Build (Desktop)
-        run: dotnet build src/RidersMirroring.Desktop/RidersMirroring.Desktop.csproj -c ${{ env.CONFIGURATION }} --no-restore /p:UseSharedCompilation=false
+      - name: Restore Core.Tests
+        run: dotnet restore tests/RidersMirroring.Core.Tests/RidersMirroring.Core.Tests.csproj
 
-      - name: Build (Core.Tests)
-        run: dotnet build tests/RidersMirroring.Core.Tests/RidersMirroring.Core.Tests.csproj -c ${{ env.CONFIGURATION }} --no-restore /p:UseSharedCompilation=false
+      - name: Restore Desktop.Tests
+        run: dotnet restore tests/RidersMirroring.Desktop.Tests/RidersMirroring.Desktop.Tests.csproj
 
-      - name: Build (Desktop.Tests)
-        run: dotnet build tests/RidersMirroring.Desktop.Tests/RidersMirroring.Desktop.Tests.csproj -c ${{ env.CONFIGURATION }} --no-restore /p:UseSharedCompilation=false
+      - name: Restore Installer
+        run: dotnet restore installer/RidersMirroring.Installer/RidersMirroring.Installer.wixproj
 
-      - name: Test (Core)
+      - name: Build Core
+        run: dotnet build src/RidersMirroring.Core/RidersMirroring.Core.csproj -c ${{ env.CONFIGURATION }} --no-restore
+
+      - name: Build Desktop
+        run: dotnet build src/RidersMirroring.Desktop/RidersMirroring.Desktop.csproj -c ${{ env.CONFIGURATION }} --no-restore
+
+      - name: Build Core.Tests
+        run: dotnet build tests/RidersMirroring.Core.Tests/RidersMirroring.Core.Tests.csproj -c ${{ env.CONFIGURATION }} --no-restore
+
+      - name: Build Desktop.Tests
+        run: dotnet build tests/RidersMirroring.Desktop.Tests/RidersMirroring.Desktop.Tests.csproj -c ${{ env.CONFIGURATION }} --no-restore
+
+      - name: Test Core
         run: dotnet test tests/RidersMirroring.Core.Tests/RidersMirroring.Core.Tests.csproj -c ${{ env.CONFIGURATION }} --no-build --nologo
 
-      - name: Test (Desktop)
+      - name: Test Desktop
         run: dotnet test tests/RidersMirroring.Desktop.Tests/RidersMirroring.Desktop.Tests.csproj -c ${{ env.CONFIGURATION }} --no-build --nologo
 
       - name: Install WiX 4
         run: dotnet tool install --global wix --version 4.0.5
 
-      - name: Publish Desktop (win-x64, framework-dependent)
-        run: >-
-          dotnet publish src/RidersMirroring.Desktop/RidersMirroring.Desktop.csproj
-          -c ${{ env.CONFIGURATION }} -r win-x64 --self-contained false
-          -p:PublishDir=$(pwd)/installer/RidersMirroring.Installer/publish/win-x64
-          -p:WindowsPackageType=None
+      - name: Publish Desktop (win-x64)
+        shell: pwsh
+        run: |
+          dotnet publish src/RidersMirroring.Desktop/RidersMirroring.Desktop.csproj `
+            -c ${{ env.CONFIGURATION }} `
+            -r win-x64 `
+            --self-contained false `
+            -p:PublishDir="${{ github.workspace }}\installer\RidersMirroring.Installer\publish\win-x64" `
+            -p:WindowsPackageType=None
+
+      - name: Resolve version
+        id: version
+        shell: pwsh
+        run: |
+          $ref = "${{ github.ref }}"
+          if ($ref.StartsWith("refs/tags/")) {
+            $tag = $ref.Substring("refs/tags/".Length)
+          } else {
+            $tag = "v1.0.0"
+          }
+          $version = $tag.TrimStart('v')
+          "VERSION=$version" >> $env:GITHUB_ENV
+          "TAG=$tag" >> $env:GITHUB_ENV
+          Write-Host "Building version $version from tag $tag"
 
       - name: Build MSI
         working-directory: installer/RidersMirroring.Installer
-        # /p:Platform=x64 is REQUIRED for WiX 4 — without it ICE80 fires on
-        # every 32-bit-flagged Component landing under ProgramFiles64Folder.
         run: >-
-          dotnet build -c ${{ env.CONFIGURATION }} -p:Platform=x64
+          dotnet build
+          -c ${{ env.CONFIGURATION }}
+          -p:Platform=x64
           /p:Version=${{ env.VERSION }}
-          /p:UpgradeCode=8B2E5C7A-3D8F-4B6E-9E1A-2C4D6F8A0B1C
+          /p:UpgradeCode=B5E3C561-2A1B-4E3E-8DF3-1F44E72B9611
           /p:ProductCode=*
 
       - name: Locate MSI
         id: msi
         shell: pwsh
         run: |
-          $msi = Get-ChildItem -Path installer/RidersMirroring.Installer/bin -Recurse -Filter *.msi | Select-Object -First 1
+          $msi = Get-ChildItem -Path installer/RidersMirroring.Installer/bin -Recurse -Filter *.msi -ErrorAction SilentlyContinue | Select-Object -First 1
           if (-not $msi) {
             Write-Host "::error::No .msi produced"
             exit 1
@@ -131,115 +129,30 @@ jobs:
           "MSI_SHA256=$hash" >> $env:GITHUB_ENV
           Write-Host "SHA256: $hash"
 
-      - name: Build site bundle
-        shell: pwsh
-        run: |
-          # Recopie le MSI dans docs/site/downloads/ pour que le site statique
-          # propose un lien miroir en plus du GitHub Releases.
-          $siteDir = "docs/site/downloads"
-          New-Item -ItemType Directory -Path $siteDir -Force | Out-Null
-          Copy-Item $env:MSI_PATH "$siteDir/$($env:TAG).msi" -Force
-          $hash = $env:MSI_SHA256
-          @"
-MSI_SHA256=$hash
-"@ | Out-File "$siteDir/$($env:TAG).msi.sha256" -Encoding ascii -NoNewline
-
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.TAG }}
-          name: "Riders Mirroring ${{ env.VERSION }}"
+          name: Riders Mirroring ${{ env.VERSION }}
           generate_release_notes: true
-          files: |
-            ${{ env.MSI_PATH }}
+          files: ${{ env.MSI_PATH }}
           body: |
-            ## 🎉 Première release publique de Riders Mirroring
+            ## Riders Mirroring ${{ env.VERSION }}
 
-            **Riders Mirroring** est une application Windows gratuite et open
-            source qui permet d'afficher et de contrôler ton téléphone
-            **Android** (USB ou Wi-Fi) directement dans une fenêtre sur ton PC.
-            Plusieurs appareils en parallèle, onglets façon navigateur,
-            latence minimale.
+            Application Windows pour afficher et contrôler ton téléphone Android
+            sur ton PC. Multi-device, onglets chrome-style, décodage H.264 in-app.
 
-            ---
+            ### Installation
 
-            ## 📥 Installation
-
-            1. Télécharge `RidersMirroring-${{ env.VERSION }}.msi` ci-dessous.
-            2. Double-clique pour installer (Windows 10 / 11 — 64 bits).
-            3. Si Windows SmartScreen affiche un avertissement, clique sur
-               *Informations complémentaires* → *Exécuter quand même*.
-               C'est normal pour un projet open source sans signature payante.
-            4. Branche ton Android en USB (active le **débogage USB** dans les
-               options développeur) ou connecte-le en Wi-Fi.
-            5. Le hub détecte automatiquement tes appareils et te laisse
-               ouvrir un onglet de mirroring par device.
+            1. Télécharge `RidersMirroring-${{ env.VERSION }}.msi`
+            2. Double-clique pour installer (Windows 10 / 11 — 64 bits)
+            3. Branche un Android en USB (active le débogage USB) ou en Wi-Fi
 
             **SHA256** : `${{ env.MSI_SHA256 }}`
 
-            ---
+            ### Liens
 
-            ## ✨ Fonctionnalités principales
-
-            | | |
-            |---|---|
-            | 📱 **Multi-instance** | Connecte plusieurs appareils en parallèle. Un onglet par device. |
-            | 🪟 **Onglets chrome-style** | Ouvre, ferme, switch entre tes sessions en un clic. |
-            | ⚡ **Décodage H.264 in-app** | FFmpeg 8.1.2 intégré, aucun `scrcpy.exe` externe. |
-            | 🔌 **USB & Wi-Fi** | Connexion automatique des devices ADB. |
-            | 🎯 **Faible latence** | Pipeline brut scrcpy v4 : ~50 ms à 1080p / 60 fps. |
-            | 🪶 **Léger & portable** | ~80 Mo installé, aucune dépendance externe. |
-
-            Pour iPhone (AirPlay), la fonctionnalité est en cours
-            d'intégration via UxPlay.
-
-            ---
-
-            ## 🧪 Qualité
-
-            - **261 tests unitaires verts** (156 Core + 105 Desktop) en Debug + Release
-            - **0 erreur de build** sur Windows + .NET 8
-            - **FFmpeg 8.1.2 vendoré** (LGPL 2.1, voir `licenses/ffmpeg-NOTICE.txt`)
-            - **scrcpy-server 4.0 vendoré** (Apache 2.0, voir `licenses/scrcpy-NOTICE.txt`)
-
-            ---
-
-            ## 🔗 Liens
-
-            - 🌐 **Site officiel** : https://meronkevin95610-crypto.github.io/riders-mirroring/
-            - 📦 **Code source** : https://github.com/meronkevin95610-crypto/riders-mirroring
-            - 📚 **Historique des versions** : https://meronkevin95610-crypto.github.io/riders-mirroring/changelog.html
-            - 🐛 **Signaler un bug** : https://github.com/meronkevin95610-crypto/riders-mirroring/issues
-
-            ---
-
-            ## 📜 Licence
-
-            Code source : **MIT** (voir [LICENSE](https://github.com/meronkevin95610-crypto/riders-mirroring/blob/master/LICENSE)).
-            FFmpeg redistribué en LGPL 2.1, scrcpy-server en Apache 2.0 — toutes les licences sont dans le dossier `licenses/` du repo.
-
-            ---
-
-            ## ⚠️ Notes techniques pour cette build
-
-            - **Audio** : désactivé par défaut dans cette release. Le squelette
-              du pipeline est en place (`ScrcpyAudioStream` + `IScrcpyAudioDecoder`)
-              mais le rendu WASAPI sera activé dans une release ultérieure.
-            - **iPhone / AirPlay** : intégration UxPlay en cours, non incluse dans cette release.
-            - **Signature numérique** : le MSI n'est pas signé. SmartScreen
-              affichera un avertissement au premier lancement.
+            - Site : https://meronkevin95610-crypto.github.io/riders-mirroring/
+            - Code source : https://github.com/meronkevin95610-crypto/riders-mirroring
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Commit site bundle
-        shell: pwsh
-        run: |
-          git config user.email "riders-bot@riders.local"
-          git config user.name  "Riders Bot"
-          git add docs/site/downloads/
-          if (git diff --cached --quiet) {
-            Write-Host "No site changes to commit."
-          } else {
-            git commit -m "docs(site): bundle MSI for $env:TAG"
-            git push
-          }
